@@ -1,0 +1,29 @@
+
+<IfModule mod_mime.c>
+	#AddType text/css .css
+	#AddType application/javascript .js
+	#AddType application/x-javascript .js
+	#AddType text/javascript .js
+	#AddType application/json .json
+</IfModule>
+
+#RewriteCond %{HTTP_HOST} ^www.asdat.ru [NC,OR]
+#RewriteCond %{HTTP_HOST} ^asdat.ru [NC,OR]
+#RewriteCond %{HTTP_HOST} ^www.asdat.co [NC,OR]
+#RewriteCond %{HTTP_HOST} ^asdat.co [NC,OR]
+#RewriteCond %{HTTP_HOST} ^www.asdat.info [NC,OR]
+#RewriteCond %{HTTP_HOST} ^asdat.info [NC,OR]
+#RewriteCond %{HTTP_HOST} ^www.asdat.org [NC]
+#RewriteRule (.*) http://asdat.org/$1 [R=301,L]
+#RewriteRule ^(.*).css$ $1.css
+#Options +FollowSymlinks
+#DirectoryIndex index.html.php
+
+RewriteEngine on
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule [^/]$ %{REQUEST_URI}/ [L,R]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^?]*)$ index.php [L,QSA]

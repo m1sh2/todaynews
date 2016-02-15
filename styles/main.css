@@ -1,0 +1,62 @@
+
+.container {
+  width: 980px;
+  margin: 0 auto;
+  background: white;
+}
+
+.content {
+  overflow: hidden;
+  margin: 0px 0;
+  padding: 40px 20px 40px;
+  background: #fff;
+}
+
+header {
+  position: fixed;
+  top: 0;
+}
+
+header .logo {
+  display: block;
+  background: cornflowerblue;
+  padding: 5px 10px;
+  text-decoration: none;
+  color: white;
+  font-weight: 900;
+}
+
+header .logo span {
+  padding: 5px 10px;
+  background: red;
+  display: inline-block;
+  margin: -5px -10px -5px 5px;
+}
+
+footer {
+  position: fixed;
+  bottom: 0px;
+  width: 940px;
+  padding: 10px 10px;
+  font-size: 11px;
+  border-top: 1px solid red;
+  background: white;
+  color: grey;
+}
+
+page {
+  display: block;
+}
+
+page:empty {
+  height: 100px;
+}
+
+page:empty:before {
+  display: block;
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  border: 2px solid red;
+}
+
