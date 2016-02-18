@@ -1,6 +1,5 @@
+'use strict';
 
-function HomeCtrl($scope, $http) {
+app.controller('HomeCtrl', ['$scope', '$http', function($scope, $http) {
   console.info(123);
-}
-
-app.controller('HomeCtrl', ['$scope', '$http', HomeCtrl]);
+}]);

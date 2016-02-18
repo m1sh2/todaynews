@@ -1,17 +1,22 @@
 
-app.config(['$routeProvider',
-  function($routeProvider) {
+app.config(['$routeProvider', '$locationProvider',
+  function($routeProvider, $locationProvider) {
     $routeProvider.
       when('/', {
-        templateUrl: './home/view.home.html',
+        templateUrl: './js/app/home/view.home.html',
         controller: 'HomeCtrl'
       }).
-      when('/page-1', {
-        templateUrl: 'partials/phone-detail.html',
-        controller: 'PhoneDetailCtrl'
+      when('/articles', {
+        templateUrl: './js/app/articles/view.articles.html',
+        controller: 'ArticlesCtrl'
+      }).
+      when('/articles/:category', {
+        templateUrl: './js/app/articles/view.articles.html',
+        controller: 'ArticlesCtrl'
       }).
       otherwise({
         redirectTo: '/'
       });
+    $locationProvider.html5Mode(true);
   }]
 );

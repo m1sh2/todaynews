@@ -1,7 +1,7 @@
 
-function MainCtrl($scope, $http, $routeProvider) {
-  $scope.title = '2323sdsd';
-  console.info($routeProvider);
-}
+app.controller('MainCtrl', ['$scope', '$http', '$route', MainCtrl]);
 
-app.controller('MainCtrl', ['$scope', '$http', '$routeProvider', MainCtrl]);
+function MainCtrl($scope, $http, $route) {
+  $scope.title = '2323sdsd';
+  console.info($route);
+}
