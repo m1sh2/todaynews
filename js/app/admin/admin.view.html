@@ -1,0 +1,23 @@
+
+
+<h1>Admin {{user}}</h1>
+
+<div class="admin_articles">
+  <h2>Articles</h2>
+
+  <div class="admin_article" ng-repeat="article in articles">
+    <h4 class="title">{{article.title}}</h4>
+    <div class="datecreated">{{article.datecreated}}</div>
+  </div>
+
+  <h3>Add article</h3>
+  <form name="addArticleForm" ng-submit="addArticle(this)">
+    <div><label>Title</label><input name="title" placeholder="Title" ng-model="article_title"></div>
+    <div><label>Content</label><textarea name="content" placeholder="Content" ng-model="article_content"></textarea></div>
+    <button class="btn">Add</button>
+  </form>
+
+</div>
+
+
+<h2>Categories</h2>

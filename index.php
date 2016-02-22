@@ -30,9 +30,15 @@
   <!-- App -->
   <script src="./js/app/config.js"></script>
   <script src="./js/app/router.js"></script>
-  <script src="./js/app/home/ctrl.home.js"></script>
-  <script src="./js/app/articles/ctrl.articles.js"></script>
-  <script src="./js/app/ctrls/ctrl.main.js"></script>
+  <script src="./js/app/controllers/main.controller.js"></script>
+  <script src="./js/app/directives/breadcrumbs.directive.js"></script>
+
+  <!-- App modules -->
+  <script src="./js/app/home/home.controller.js"></script>
+  <script src="./js/app/articles/articles.controller.js"></script>
+  <script src="./js/app/admin/admin.controller.js"></script>
+  <script src="./js/app/login/login.controller.js"></script>
+  <script src="./js/app/signup/signup.controller.js"></script>
   
 
 
@@ -64,18 +70,26 @@
   <script src="https://code.angularjs.org/2.0.0-alpha.50/angular2.min.js"></script> -->
 </head>
 <body>
-<div class="container">
+<div class="container" ng-controller="MainCtrl as main">
   <header>
     <a href="/" class="logo">TODAY <span>NEWS</span></a>
-
+    <div class="menu-top">
+      <a href="/about">О сервисе</a>
+      <a href="javascript:void(0)" ng-click="main.loginDropdown = !main.loginDropdown" class="dropdown-link">Войти</a>
+      <div class="dropdown dropdown-menu-top" ng-show="main.loginDropdown">
+        <h1>Login {{user}}</h1>
+        <button ng-click="main.loginDropdown = !main.loginDropdown;runLogin()" class="btn">Login</button>
+        <button ng-click="main.loginDropdown = !main.loginDropdown;main.runLogout()" class="btn">Logout</button>
+        <a href="/signup" ng-click="main.loginDropdown = !main.loginDropdown" class="btn">Signup</a>
+      </div>
+    </div>
+    
   </header>
   <div class="content">
     <div class="drow">
-      <div class="dcol34">
+      <div class="dcol11">
+        <div class="bredcrumbs"></div>
         <div class="page {{ pageClass }}" ng-view></div>
-      </div>
-      <div class="dcol14">
-        <right></right>
       </div>
     </div>
   </div>
