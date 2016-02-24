@@ -31,11 +31,13 @@
   <script src="./js/app/config.js"></script>
   <script src="./js/app/router.js"></script>
   <script src="./js/app/controllers/main.controller.js"></script>
+  <script src="./js/app/controllers/categories.controller.js"></script>
   <script src="./js/app/directives/breadcrumbs.directive.js"></script>
 
   <!-- App modules -->
   <script src="./js/app/home/home.controller.js"></script>
   <script src="./js/app/articles/articles.controller.js"></script>
+  <script src="./js/app/article/article.controller.js"></script>
   <script src="./js/app/admin/admin.controller.js"></script>
   <script src="./js/app/login/login.controller.js"></script>
   <script src="./js/app/signup/signup.controller.js"></script>
@@ -83,7 +85,9 @@
         <a href="/signup" ng-click="main.loginDropdown = !main.loginDropdown" class="btn">Signup</a>
       </div>
     </div>
-    
+    <div id="categories" ng-controller="CategoriesCtrl as cats">
+      <a href="{{category.url}}" ng-repeat="category in cats.categories">{{category.title}}</a>
+    </div>
   </header>
   <div class="content">
     <div class="drow">

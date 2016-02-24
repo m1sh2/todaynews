@@ -29,11 +29,13 @@ app.config(['$routeProvider', '$locationProvider',
       }).
       when('/:category', {
         templateUrl: './js/app/articles/articles.view.html',
-        controller: 'ArticlesCtrl'
+        controller: 'ArticlesCtrl',
+        controllerAs: 'arts'
       }).
       when('/:category/:article', {
-        templateUrl: './js/app/articles/articles.view.html',
-        controller: 'ArticlesCtrl'
+        templateUrl: './js/app/article/article.view.html',
+        controller: 'ArticleCtrl',
+        controllerAs: 'art'
       }).
       otherwise({
         redirectTo: '/'

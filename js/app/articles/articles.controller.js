@@ -4,10 +4,11 @@ app.controller('ArticlesCtrl', ['$scope', '$http', '$routeParams', '$sce', Artic
 
 function ArticlesCtrl($scope, $http, $routeParams, $sce) {
   console.info(1234, $routeParams.category);
-  $scope.category = $routeParams.category;
-  $http.get('api.php?act=getCategories').then(function(result) {
+  var arts = this;
+  arts.category = $routeParams.category;
+  $http.get('api.php?act=getArticles&category=' + arts.category).then(function(result) {
     console.info(result.data);
-
-    $scope.categories = result.data;
+    arts.articles = result.data;
+    // $scope.categories = result.data;
   });
 }
