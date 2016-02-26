@@ -1,2 +1,4 @@
-<h1>Articles {{arts.category}}</h1>
-<div ng-repeat="article in arts.articles"><a href="/{{arts.category}}/{{article.url}}">{{article.title}}</a></div>
+<h1>{{arts.category.title}}</h1>
+<div ng-repeat="article in arts.articles">
+<h4 class="title"><small class="datecreated">{{article.datecreated}}</small> <a href="/{{article.category_url}}/{{article.url}}">{{article.title}}</a></h4>
+</div>

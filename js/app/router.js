@@ -4,7 +4,8 @@ app.config(['$routeProvider', '$locationProvider',
     $routeProvider.
       when('/', {
         templateUrl: './js/app/home/home.view.html',
-        controller: 'HomeCtrl'
+        controller: 'HomeCtrl',
+        controllerAs: 'home'
       }).
       // when('/articles', {
       //   templateUrl: './js/app/articles/articles.view.html',
@@ -21,11 +22,13 @@ app.config(['$routeProvider', '$locationProvider',
       }).
       when('/login', {
         templateUrl: './js/app/login/login.view.html',
-        controller: 'LoginCtrl'
+        controller: 'LoginCtrl',
+        controllerAs: 'login'
       }).
       when('/signup', {
         templateUrl: './js/app/signup/signup.view.html',
-        controller: 'SignupCtrl'
+        controller: 'SignupCtrl',
+        controllerAs: 'signup'
       }).
       when('/:category', {
         templateUrl: './js/app/articles/articles.view.html',
@@ -51,6 +54,6 @@ app.run(function($rootScope) {
   $rootScope.$on( "$routeChangeStart", function(event, next, current) {
     //..do something
     //event.stopPropagation();  //if you don't want event to bubble up 
-    console.info('chaged');
+    // console.info('chaged');
   });
 });

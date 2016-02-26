@@ -1,5 +1,6 @@
-<h1>My First Angular 2 App {{appName}}</h1>
+<h2>IN|FA</h2>
 
-<p><a href="/new-one">New one</a></p>
-<p><a href="/admin">Admin</a></p>
 
+<div class="article" ng-repeat="article in home.articles">
+  <h4 class="title"><small class="datecreated">{{article.datecreated}}</small> <a href="{{article.category_url}}/{{article.url}}">{{article.title}}</a></h4>
+</div>

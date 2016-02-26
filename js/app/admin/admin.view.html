@@ -1,23 +1,42 @@
 
+<div ng-show="admin.user && admin.user.length === 64">
+  <h1>Admin {{user}}</h1>
 
-<h1>Admin {{user}}</h1>
+  <div class="admin_articles">
+    <h2>Articles</h2>
 
-<div class="admin_articles">
-  <h2>Articles</h2>
+    <h3>Add article</h3>
+    <form name="addArticleForm" ng-submit="admin.addArticle(this)">
+      <div>
+        <label>Title</label>
+        <input name="title" placeholder="Title" ng-model="admin.article_title">
+      </div>
+      <div>
+        <label>Content</label>
+        <textarea name="content" placeholder="Content" ng-model="admin.article_content"></textarea>
+      </div>
+      <div>
+        <label>Category</label>
+        <select name="category" ng-model="admin.article_category">
+          <option value="{{category.id}}" ng-repeat="category in admin.categories">{{category.title}}</option>
+        </select>
+      </div>
+      <button class="btn">Add</button>
+    </form>
 
-  <div class="admin_article" ng-repeat="article in articles">
-    <h4 class="title">{{article.title}}</h4>
-    <div class="datecreated">{{article.datecreated}}</div>
+    <h3>List of articles</h3>
+    <div class="admin_article" ng-repeat="article in admin.articles">
+      <h4 class="title"><small class="datecreated">{{article.datecreated}}</small> <a href="{{article.category_url}}/{{article.url}}" target="_blank">{{article.title}}</a></h4>
+    </div>
+
   </div>
 
-  <h3>Add article</h3>
-  <form name="addArticleForm" ng-submit="addArticle(this)">
-    <div><label>Title</label><input name="title" placeholder="Title" ng-model="article_title"></div>
-    <div><label>Content</label><textarea name="content" placeholder="Content" ng-model="article_content"></textarea></div>
-    <button class="btn">Add</button>
-  </form>
+
+  <h2>Categories</h2>
+  <div ng-repeat="category in admin.categories">
+    <a href="{{category.url}}" target="_blank">{{category.title}}</a>
+  </div>
+
 
 </div>
 
-
-<h2>Categories</h2>

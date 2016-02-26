@@ -1,6 +1,7 @@
 ﻿<?php
 // $mysql_link = mysql_connect('datsko.mysql.ukraine.com.ua', 'datsko_todaynews', 'rvbef8vy');
 
+require_once('./php/transliteration/JTransliteration.php');
 
 /* return name of current default database */
 // if ($result = $mysqli->query("SELECT DATABASE()")) {
@@ -24,6 +25,8 @@ $act = isset($_POST['act']) ? $_POST['act'] : $_GET['act'];
 // echo json_encode([$_REQUEST, $act]);
 // echo json_encode($_POST);
 // echo $act;
+// $data = json_decode(base64_decode($_REQUEST['data']));
+// echo $utf->toAscii($data->title);
 // exit();
 
 function q($query) {
@@ -50,7 +53,71 @@ function q($query) {
   $mysqli->close();
 }
 
+function GUI($length = 32) {
+  $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  $charactersLength = strlen($characters);
+  $randomString = '';
+  for ($i = 0; $i < $length; $i++) {
+      $randomString .= $characters[rand(0, $charactersLength - 1)];
+  }
+  return $randomString;
+}
+
 switch($act) {
+
+  case 'runLogin':
+    $session_id = GUI(40);
+    $start = rand(1, 24);
+    $end = 24 - $start;
+    $start = GUI($start);
+    $end = GUI($end);
+    $data = json_decode(base64_decode($_REQUEST['data']));
+
+    $result = q("SELECT id FROM users WHERE email = '" . $data->email . "' AND password = '" . $data->password . "'");
+
+    if ($result->num_rows === 1) {
+      $user = $result->fetch_assoc();
+      $result = q("INSERT INTO sessions (
+          code,
+          code_start,
+          code_end,
+          os,
+          browser,
+          ip,
+          ip2,
+          ip3,
+          datecreated,
+          user
+        ) VALUES (
+          '" . $session_id . "',
+          '" . $start . "',
+          '" . $end . "',
+          '" . php_uname('a') . "',
+          '" . $_SERVER['HTTP_USER_AGENT'] . "',
+          '" . $_SERVER['REMOTE_ADDR'] . "',
+          '" . $_SERVER['HTTP_X_FORWARDED_FOR'] . "',
+          '" . $_SERVER['HTTP_CLIENT_IP'] . "',
+          '" . date('Y-m-d H:i:s') . "',
+          '" . $user['id'] . "'
+        )");
+      
+      // echo json_encode([$result, 123, $data, $mysqli->insert_id]);
+      echo json_encode($start . $session_id . $end);
+    } else {
+      echo json_encode(['error' => 'Error']);
+    }
+    
+
+    
+    break;
+
+  case 'runSignup':
+    $data = json_decode(base64_decode($_REQUEST['data']));
+    $result = q("INSERT INTO users (email) VALUES ('" . $data->title . "')");
+    
+    echo json_encode([$result, 123, $data, $mysqli->insert_id]);
+    break;
+
   case 'getCategories':
     $result = q("SELECT * FROM categories WHERE publish = 1 ORDER BY title ASC");
     
@@ -68,47 +135,39 @@ switch($act) {
     echo json_encode($rows);
     break;
 
-  case 'runLogin':
-    $data = json_decode(base64_decode($_REQUEST['data']));
-    $result = q("INSERT INTO articles (title) VALUES ('" . $data->title . "')");
-    
-    // $rows = array();
-    // while ($row = $result->fetch_assoc()) {
-    //   array_push($rows, array(
-    //       'id' => $row['id'],
-    //       'title' => $row['title'],
-    //       'publish' => $row['publish'],
-    //       'url' => $row['url'],
-    //       'subid' => $row['subid']
-    //     )
-    //   );
-    // }
-    echo json_encode([$result, 123, $data, $mysqli->insert_id]);
-    break;
-
-  case 'runSignup':
-    $data = json_decode(base64_decode($_REQUEST['data']));
-    $result = q("INSERT INTO users (email) VALUES ('" . $data->title . "')");
-    
-    // $rows = array();
-    // while ($row = $result->fetch_assoc()) {
-    //   array_push($rows, array(
-    //       'id' => $row['id'],
-    //       'title' => $row['title'],
-    //       'publish' => $row['publish'],
-    //       'url' => $row['url'],
-    //       'subid' => $row['subid']
-    //     )
-    //   );
-    // }
-    echo json_encode([$result, 123, $data, $mysqli->insert_id]);
-    break;
-
   case 'getArticles':
-    $result = q("SELECT a.* FROM categories AS c
-      INNER JOIN articles AS a ON a.category = c.id
-      WHERE c.url = '" . $_GET['category'] . "'
-      ORDER BY a.datecreated DESC");
+    $result = q("SELECT c.* FROM categories AS c WHERE c.url = '" . $_GET['category_url'] . "'");
+    $category = $result->fetch_assoc();
+
+    if ($category['id'] > 0) {
+      $result = q("SELECT a.* FROM articles AS a
+        WHERE a.category = '" . $category['id'] . "'
+        ORDER BY a.datecreated DESC");
+      
+      $articles = array();
+      while ($article = $result->fetch_assoc()) {
+        array_push($articles, array(
+            'id' => $article['id'],
+            'title' => $article['title'],
+            'publish' => $article['publish'],
+            'url' => $article['url'],
+            'category_url' => $category['url'],
+            'datecreated' => date('H:i d.m.Y', $row['datecreated']),
+            'subid' => $article['subid']
+          )
+        );
+      }
+      echo json_encode(['category' => $category, 'articles' => $articles]);
+    } else {
+      echo json_encode(['error' => 'Not_found']);
+    }
+    break;
+
+  case 'getArticlesHome':
+    $result = q("SELECT a.*, c.title AS category_name, c.url AS category_url FROM articles AS a
+      INNER JOIN categories AS c ON c.id = a.category
+      ORDER BY a.datecreated DESC
+      LIMIT 10");
     // $result = q("SELECT a.* FROM articles AS a WHERE a.category = 2 ORDER BY a.datecreated DESC");
     
     $rows = array();
@@ -118,6 +177,31 @@ switch($act) {
           'title' => $row['title'],
           'publish' => $row['publish'],
           'url' => $row['url'],
+          'category_url' => $row['category_url'],
+          'datecreated' => date('H:i d.m.Y', $row['datecreated']),
+          'subid' => $row['subid']
+        )
+      );
+    }
+    echo json_encode($rows);
+    break;
+
+  case 'getArticlesAdmin':
+    $result = q("SELECT a.*, c.title AS category_name, c.url AS category_url FROM articles AS a
+      INNER JOIN categories AS c ON c.id = a.category
+      ORDER BY a.datecreated DESC
+      LIMIT 10");
+    // $result = q("SELECT a.* FROM articles AS a WHERE a.category = 2 ORDER BY a.datecreated DESC");
+    
+    $rows = array();
+    while ($row = $result->fetch_assoc()) {
+      array_push($rows, array(
+          'id' => $row['id'],
+          'title' => $row['title'],
+          'publish' => $row['publish'],
+          'url' => $row['url'],
+          'category_url' => $row['category_url'],
+          'datecreated' => date('H:i d.m.Y', $row['datecreated']),
           'subid' => $row['subid']
         )
       );
@@ -148,15 +232,22 @@ switch($act) {
 
   case 'addArticle':
     $data = json_decode(base64_decode($_REQUEST['data']));
+    $url = strtolower(str_replace(' ', '-', preg_replace('!\s+!', ' ', preg_replace("/[^a-zA-Z0-9 ]+/", "", JTransliteration::transliterate(base64_decode($data->title))))));
+    // echo $url;
+    // exit();
     $result = q("INSERT INTO articles (
       title,
       content,
+      category,
+      url,
       datecreated,
       publish
       ) VALUES (
-      '" . $data->title . "',
-      '" . $data->content . "',
-      '" . date('Y-m-d H:i:s') . "',
+      '" . base64_decode($data->title) . "',
+      '" . base64_decode($data->content) . "',
+      '" . $data->category . "',
+      '" . $url . "',
+      '" . strtotime(date('Y-m-d H:i:s')) . "',
       1
       )");
     
@@ -171,7 +262,7 @@ switch($act) {
     //     )
     //   );
     // }
-    echo json_encode([$result, 123, $data, $mysqli->insert_id]);
+    echo json_encode([$result, 123, $data, $mysqli->insert_id, $url]);
     break;
 
   case 'addUser':

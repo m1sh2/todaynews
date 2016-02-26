@@ -3,11 +3,16 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <base href="/">
-  <title>Today News</title>
+  <title>IN|FA</title>
   <link rel="stylesheet" href="styles/style.css" type="text/css" />
   <link rel="stylesheet" href="styles/grid.css" type="text/css" />
   <link rel="stylesheet" href="styles/icons.css" type="text/css" />
   <link rel="stylesheet" href="styles/main.css" type="text/css" />
+
+  <!-- Config -->
+  <script type="text/javascript">
+    var lang = 'ru';
+  </script>
 
   <!-- <script src="angular2/bundles/angular2-polyfills.min.js"></script> -->
   <!-- <script src="js/libs/es6-shim.min.js"></script> -->
@@ -26,6 +31,8 @@
   <script src="./js/libs/angular.min.js"></script>
   <script src="./js/libs/angular-route.min.js"></script>
   <script src="./js/libs/angular-sanitize.min.js"></script>
+  <script src="./js/libs/base64.js"></script>
+  <script src="./js/_txt.js"></script>
   
   <!-- App -->
   <script src="./js/app/config.js"></script>
@@ -74,15 +81,22 @@
 <body>
 <div class="container" ng-controller="MainCtrl as main">
   <header>
-    <a href="/" class="logo">TODAY <span>NEWS</span></a>
+    <a href="/" class="logo">IN <span>FA</span></a>
     <div class="menu-top">
       <a href="/about">О сервисе</a>
       <a href="javascript:void(0)" ng-click="main.loginDropdown = !main.loginDropdown" class="dropdown-link">Войти</a>
       <div class="dropdown dropdown-menu-top" ng-show="main.loginDropdown">
-        <h1>Login {{user}}</h1>
-        <button ng-click="main.loginDropdown = !main.loginDropdown;runLogin()" class="btn">Login</button>
-        <button ng-click="main.loginDropdown = !main.loginDropdown;main.runLogout()" class="btn">Logout</button>
-        <a href="/signup" ng-click="main.loginDropdown = !main.loginDropdown" class="btn">Signup</a>
+        <h4>Login {{user}}</h4>
+        <div>
+        <a href="#" ng-click="main.loginDropdown = !main.loginDropdown;runLogin()">Login</a>
+        </div>
+        <div>
+        <a href="#" ng-click="main.loginDropdown = !main.loginDropdown;main.runLogout()">Logout</a>
+        </div>
+        <a href="/admin" ng-click="main.loginDropdown = !main.loginDropdown">Admin</a>
+        <div>
+        <a href="/signup" ng-click="main.loginDropdown = !main.loginDropdown">Signup</a>
+        </div>
       </div>
     </div>
     <div id="categories" ng-controller="CategoriesCtrl as cats">
