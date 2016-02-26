@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html ng-app="TodayNews">
+<html ng-app="INFA">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <base href="/">
   <title>IN|FA</title>
+  <link href="images/favicon.png" rel="icon">
   <link rel="stylesheet" href="styles/style.css" type="text/css" />
   <link rel="stylesheet" href="styles/grid.css" type="text/css" />
   <link rel="stylesheet" href="styles/icons.css" type="text/css" />
@@ -86,11 +87,12 @@
       <a href="/about">О сервисе</a>
       <a href="javascript:void(0)" ng-click="main.loginDropdown = !main.loginDropdown" class="dropdown-link">Войти</a>
       <div class="dropdown dropdown-menu-top" ng-show="main.loginDropdown">
-        <h4>Login {{user}}</h4>
-        <div>
+        <h4>Login</h4>
+        <h5 ng-show="!!main.user">{{main.user}}</h5>
+        <div ng-show="!main.user">
         <a href="#" ng-click="main.loginDropdown = !main.loginDropdown;runLogin()">Login</a>
         </div>
-        <div>
+        <div ng-show="!!main.user">
         <a href="#" ng-click="main.loginDropdown = !main.loginDropdown;main.runLogout()">Logout</a>
         </div>
         <a href="/admin" ng-click="main.loginDropdown = !main.loginDropdown">Admin</a>
@@ -112,7 +114,7 @@
     </div>
   </div>
   <footer>
-    &copy; Today News, 2016
+    &copy; IN|FA, 2016
   </footer>
 </div>
 </body>

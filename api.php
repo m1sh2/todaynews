@@ -73,7 +73,7 @@ switch($act) {
     $end = GUI($end);
     $data = json_decode(base64_decode($_REQUEST['data']));
 
-    $result = q("SELECT id FROM users WHERE email = '" . $data->email . "' AND password = '" . $data->password . "'");
+    $result = q("SELECT id, email FROM users WHERE email = '" . $data->email . "' AND password = '" . $data->password . "'");
 
     if ($result->num_rows === 1) {
       $user = $result->fetch_assoc();
@@ -102,7 +102,7 @@ switch($act) {
         )");
       
       // echo json_encode([$result, 123, $data, $mysqli->insert_id]);
-      echo json_encode($start . $session_id . $end);
+      echo json_encode(['code' => $start . $session_id . $end, 'user' => $user->email]);
     } else {
       echo json_encode(['error' => 'Error']);
     }
