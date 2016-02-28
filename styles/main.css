@@ -8,7 +8,7 @@
 .content {
   overflow: hidden;
   margin: 0px 0;
-  padding: 40px 10px 40px;
+  padding: 40px 20px 40px;
   background: #fff;
   word-break: break-word;
 }
@@ -50,7 +50,6 @@ header #categories {
   display: block;
   float: left;
   text-align: left;
-  border-right: 5px solid #eee;
   padding: 0 15px;
 }
 
@@ -62,7 +61,8 @@ header #categories a {
 header .menu-top {
   float: right;
   display: block;
-  padding: 0px 10px 0px 0px;
+  padding: 0px 10px 0px 10px;
+  background: #eee;
 }
 
 header .menu-top a {
@@ -75,7 +75,7 @@ footer {
   position: fixed;
   bottom: 0px;
   width: 960px;
-  padding: 10px 10px;
+  padding: 10px 20px;
   font-size: 11px;
   border-top: 1px solid red;
   background: white;
@@ -120,7 +120,33 @@ page:empty:before {
   border-bottom: 1px dashed #0088cc;
 }
 
+form[name="addArticleForm"] {
+  position: relative;
+}
 
+.preload {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+}
+.preload .preload-box {
+  position: absolute;
+  width: 100px;
+  height: 10px;
+  border: 1px solid #fff;
+  left: 50%;
+  top: 50%;
+  margin: -5px 0 0 -50px;
+}
+.preload .preload-box .preload-handler {
+  position: absolute;
+  width: 0%;
+  height: 10px;
+  background: rgba(255,255,255,0.5);
+}
 
 .dropdown {
   position: absolute;

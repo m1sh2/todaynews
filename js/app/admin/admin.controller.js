@@ -38,18 +38,50 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
     data.title = Base64.encode(admin.article_title);
     data.content = Base64.encode(admin.article_content);
     data.category = admin.article_category;
-    $http.post('api.php?act=addArticle&data=' + Base64.encode(JSON.stringify(data))).then(function(result) {
-      // console.info(result);
-      getArticles();
-      CKEDITOR.instances.article_content.destroy();
-      CKEDITOR.replace('article_content');
-      admin.article_title = '';
-      admin.article_content = '';
-      admin.article_category = 1;
-      admin.articleAdd = false;
-      
-      // $scope.user = data;
-    });
+    var dataEncoded = Base64.encode(JSON.stringify(data));
+    // console.info(dataEncoded.length);
+    if (dataEncoded.length > 2000) {
+      var parts = dataEncoded.match(/.{1,2000}/g);
+      // console.info(parts.length);
+      preload.init(document.querySelector('form[name="addArticleForm"]'));
+      sendPart(0);
+      function sendPart(i) {
+        preload.run(document.querySelector('form[name="addArticleForm"]'), 100 / parts.length * (i + 1) );
+        if (i + 1 < parts.length) {
+          $http.post('api.php?act=addArticle&part=' + parts[i]).then(function(result) {
+            // console.info(i, parts.length);
+            setTimeout(function() {
+              sendPart(i + 1);
+            }, 1000);
+          });
+        } else {
+          $http.post('api.php?act=addArticle&finish=' + parts[i]).then(function(result) {
+            // console.info(i, 'finish');
+            getArticles();
+            CKEDITOR.instances.article_content.destroy();
+            CKEDITOR.replace('article_content');
+            admin.article_title = '';
+            admin.article_content = '';
+            admin.article_category = 1;
+            admin.articleAdd = false;
+            preload.remove(document.querySelector('form[name="addArticleForm"]'));
+          });
+        }
+      }
+    } else {
+      $http.post('api.php?act=addArticle&data=' + Base64.encode(JSON.stringify(data))).then(function(result) {
+        // console.info(result);
+        getArticles();
+        CKEDITOR.instances.article_content.destroy();
+        CKEDITOR.replace('article_content');
+        admin.article_title = '';
+        admin.article_content = '';
+        admin.article_category = 1;
+        admin.articleAdd = false;
+        
+        // $scope.user = data;
+      });
+    }
   }
 
   function getArticles() {

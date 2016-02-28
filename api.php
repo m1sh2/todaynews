@@ -1,4 +1,5 @@
-﻿<?php
+<?php
+session_start();
 // $mysql_link = mysql_connect('datsko.mysql.ukraine.com.ua', 'datsko_todaynews', 'rvbef8vy');
 
 require_once('./php/transliteration/JTransliteration.php');
@@ -231,38 +232,56 @@ switch($act) {
     break;
 
   case 'addArticle':
-    $data = json_decode(base64_decode($_REQUEST['data']));
-    $url = strtolower(str_replace(' ', '-', preg_replace('!\s+!', ' ', preg_replace("/[^a-zA-Z0-9 ]+/", "", JTransliteration::transliterate(base64_decode($data->title))))));
-    // echo $url;
-    // exit();
-    $result = q("INSERT INTO articles (
-      title,
-      content,
-      category,
-      url,
-      datecreated,
-      publish
-      ) VALUES (
-      '" . base64_decode($data->title) . "',
-      '" . base64_decode($data->content) . "',
-      '" . $data->category . "',
-      '" . $url . "',
-      '" . strtotime(date('Y-m-d H:i:s')) . "',
-      1
-      )");
     
-    // $rows = array();
-    // while ($row = $result->fetch_assoc()) {
-    //   array_push($rows, array(
-    //       'id' => $row['id'],
-    //       'title' => $row['title'],
-    //       'publish' => $row['publish'],
-    //       'url' => $row['url'],
-    //       'subid' => $row['subid']
-    //     )
-    //   );
-    // }
-    echo json_encode([$result, 123, $data, $mysqli->insert_id, $url]);
+      
+    if (isset($_REQUEST['part'])) {
+      if (!isset($_SESSION['data'])) {
+        $_SESSION['data'] = '';
+      }
+      $_SESSION['data'] .= $_REQUEST['part'];
+    } else {
+      if (isset($_REQUEST['finish'])) {
+        $data = json_decode(base64_decode($_SESSION['data'] . $_REQUEST['finish']));
+        $finish = true;
+        $_SESSION['data'] = '';
+      } else {
+        $finish = false;
+        $data = json_decode(base64_decode($_REQUEST['data']));
+      }
+      
+      $url = strtolower(str_replace(' ', '-', preg_replace('!\s+!', ' ', preg_replace("/[^a-zA-Z0-9 ]+/", "", JTransliteration::transliterate(base64_decode($data->title))))));
+      // echo $url;
+      // exit();
+
+      $result = q("INSERT INTO articles (
+        title,
+        content,
+        category,
+        url,
+        datecreated,
+        publish
+        ) VALUES (
+        '" . base64_decode($data->title) . "',
+        '" . base64_decode($data->content) . "',
+        '" . $data->category . "',
+        '" . $url . "',
+        '" . strtotime(date('Y-m-d H:i:s')) . "',
+        1
+        )");
+      
+      // $rows = array();
+      // while ($row = $result->fetch_assoc()) {
+      //   array_push($rows, array(
+      //       'id' => $row['id'],
+      //       'title' => $row['title'],
+      //       'publish' => $row['publish'],
+      //       'url' => $row['url'],
+      //       'subid' => $row['subid']
+      //     )
+      //   );
+      // }
+      echo json_encode([$result, $finish, $data, $mysqli->insert_id, $url, $_SESSION['data'], $_REQUEST['finish']]);
+    }
     break;
 
   case 'addUser':

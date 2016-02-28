@@ -37,7 +37,7 @@
         
       </form>
     </div>
-    <div class="admin_article" ng-repeat="article in admin.articles">
+    <div class="admin_article" ng-repeat="article in admin.articles track by $index">
       <h4 class="title"><small class="datecreated">{{article.datecreated}}</small> <a href="{{article.category_url}}/{{article.url}}" target="_blank">{{article.title}}</a></h4>
     </div>
 
@@ -45,7 +45,7 @@
 
 
   <h2>Categories</h2>
-  <div ng-repeat="category in admin.categories">
+  <div ng-repeat="category in admin.categories track by $index">
     <a href="{{category.url}}" target="_blank">{{category.title}}</a>
   </div>
 
