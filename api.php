@@ -153,7 +153,7 @@ switch($act) {
             'publish' => $article['publish'],
             'url' => $article['url'],
             'category_url' => $category['url'],
-            'datecreated' => date('H:i d.m.Y', $row['datecreated']),
+            'datecreated' => date('H:i d.m.Y', $article['datecreated']),
             'subid' => $article['subid']
           )
         );
