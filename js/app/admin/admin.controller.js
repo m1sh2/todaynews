@@ -11,6 +11,7 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
   admin.article_title = '';
   admin.article_content = '';
   admin.article_category = 1;
+  admin.articleAdd = false;
   code = localStorage.getItem('code');
   
   if (code !== null && typeof code !== 'undefined' && code.length === 64) {
@@ -32,6 +33,7 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
   // $scope.article = {};
   admin.addArticle = function(f) {
     // console.info(f, $scope.article_title);
+    admin.article_content = CKEDITOR.instances.article_content.getData();
     var data = {};
     data.title = Base64.encode(admin.article_title);
     data.content = Base64.encode(admin.article_content);
@@ -39,10 +41,13 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
     $http.post('api.php?act=addArticle&data=' + Base64.encode(JSON.stringify(data))).then(function(result) {
       // console.info(result);
       getArticles();
-
+      CKEDITOR.instances.article_content.destroy();
+      CKEDITOR.replace('article_content');
       admin.article_title = '';
       admin.article_content = '';
       admin.article_category = 1;
+      admin.articleAdd = false;
+      
       // $scope.user = data;
     });
   }
@@ -57,6 +62,7 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
   
   function displayAdmin() {
     // console.assert('admin');
+    CKEDITOR.replace('article_content');
   }
 }
 

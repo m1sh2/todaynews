@@ -32,6 +32,7 @@
   <script src="./js/libs/angular.min.js"></script>
   <script src="./js/libs/angular-route.min.js"></script>
   <script src="./js/libs/angular-sanitize.min.js"></script>
+  <script src="./js/libs/ckeditor/ckeditor.js"></script>
   <script src="./js/libs/base64.js"></script>
   <script src="./js/_txt.js"></script>
   

@@ -3,28 +3,40 @@
   <h1>Admin {{user}}</h1>
 
   <div class="admin_articles">
-    <h2>Articles</h2>
-
-    <h3>Add article</h3>
-    <form name="addArticleForm" ng-submit="admin.addArticle(this)">
-      <div>
-        <label>Title</label>
-        <input name="title" placeholder="Title" ng-model="admin.article_title">
-      </div>
-      <div>
-        <label>Content</label>
-        <textarea name="content" placeholder="Content" ng-model="admin.article_content"></textarea>
-      </div>
-      <div>
-        <label>Category</label>
-        <select name="category" ng-model="admin.article_category">
-          <option value="{{category.id}}" ng-repeat="category in admin.categories">{{category.title}}</option>
-        </select>
-      </div>
-      <button class="btn">Add</button>
-    </form>
-
-    <h3>List of articles</h3>
+    <h2>Articles <button type="button" class="btn" ng-click="admin.articleAdd = !admin.articleAdd">Add article</button></h2>
+    <div ng-show="admin.articleAdd" style="  padding: 20px;background: #eee;margin: 0 0 20px;">
+      <span class="close icon-cross" ng-click="admin.articleAdd = !admin.articleAdd"></span>
+      <form name="addArticleForm" ng-submit="admin.addArticle(this)">
+        <div class="drow">
+          <div class="dcol14">
+            <h5><label>Category</label></h5>
+          </div>
+          <div class="dcol34">
+            <select name="category" ng-model="admin.article_category">
+              <option value="{{category.id}}" ng-repeat="category in admin.categories">{{category.title}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="drow">
+          <div class="dcol14">
+            <h5><label>Title</label></h5>
+          </div>
+          <div class="dcol34">
+            <input name="title" placeholder="Title" ng-model="admin.article_title">
+          </div>
+        </div>
+        <div class="drow">
+          <div class="dcol11">
+            <h5><label>Content</label></h5>
+            <textarea name="content" placeholder="Content" ng-model="admin.article_content" id="article_content"></textarea>
+          </div>
+        </div>
+        <div align="center">
+          <button class="btn">Save</button>
+        </div>
+        
+      </form>
+    </div>
     <div class="admin_article" ng-repeat="article in admin.articles">
       <h4 class="title"><small class="datecreated">{{article.datecreated}}</small> <a href="{{article.category_url}}/{{article.url}}" target="_blank">{{article.title}}</a></h4>
     </div>
