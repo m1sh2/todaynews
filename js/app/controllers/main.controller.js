@@ -57,9 +57,9 @@ function MainCtrl($scope, $http, $route, $location) {
     
     // $scope.$apply();
   }
-}
 
-// MainCtrl.prototype.runLogout = function(argument) {
-//   localStorage.removeItem('code');
-//   this._location.path("/");
-// }
+  main.runLogout = function(argument) {
+    localStorage.removeItem('code');
+    this._location.path("/");
+  }
+}
