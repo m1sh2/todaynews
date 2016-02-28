@@ -60,6 +60,6 @@ function MainCtrl($scope, $http, $route, $location) {
 
   main.runLogout = function(argument) {
     localStorage.removeItem('code');
-    this._location.path("/");
+    window.location = "/";
   }
 }
