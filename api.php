@@ -120,14 +120,13 @@ switch($act) {
     break;
 
   case 'getCategories':
-    $result = q("SELECT * FROM categories WHERE publish = 1 ORDER BY title ASC");
-    
+    $result = q("SELECT * FROM categories WHERE state = 1 ORDER BY title ASC");
     $rows = array();
     while ($row = $result->fetch_assoc()) {
       array_push($rows, array(
           'id' => $row['id'],
           'title' => $row['title'],
-          'publish' => $row['publish'],
+          'state' => $row['state'],
           'url' => $row['url'],
           'subid' => $row['subid']
         )
@@ -150,10 +149,11 @@ switch($act) {
         array_push($articles, array(
             'id' => $article['id'],
             'title' => $article['title'],
-            'publish' => $article['publish'],
+            'state' => $article['state'],
             'url' => $article['url'],
             'category_url' => $category['url'],
-            'datecreated' => date('H:i d.m.Y', $article['datecreated']),
+            'date' => date('d.m.Y', $article['datecreated']),
+            'time' => date('H:i', $article['datecreated']),
             'subid' => $article['subid']
           )
         );
@@ -176,10 +176,11 @@ switch($act) {
       array_push($rows, array(
           'id' => $row['id'],
           'title' => $row['title'],
-          'publish' => $row['publish'],
+          'state' => $row['state'],
           'url' => $row['url'],
           'category_url' => $row['category_url'],
-          'datecreated' => date('H:i d.m.Y', $row['datecreated']),
+          'date' => date('d.m.Y', $row['datecreated']),
+          'time' => date('H:i', $row['datecreated']),
           'subid' => $row['subid']
         )
       );
@@ -199,11 +200,15 @@ switch($act) {
       array_push($rows, array(
           'id' => $row['id'],
           'title' => $row['title'],
-          'publish' => $row['publish'],
+          'state' => $row['state'],
           'url' => $row['url'],
           'category_url' => $row['category_url'],
-          'datecreated' => date('H:i d.m.Y', $row['datecreated']),
-          'subid' => $row['subid']
+          'category_name' => $row['category_name'],
+          'date' => date('d.m.Y', $row['datecreated']),
+          'time' => date('H:i', $row['datecreated']),
+          'subid' => $row['subid'],
+          'cost' => $row['cost'],
+          'paid' => $row['paid']
         )
       );
     }
@@ -222,7 +227,7 @@ switch($act) {
       array_push($rows, array(
           'id' => $row['id'],
           'title' => $row['title'],
-          'publish' => $row['publish'],
+          'state' => $row['state'],
           'url' => $row['url'],
           'content' => $row['content']
         )
@@ -259,7 +264,7 @@ switch($act) {
         category,
         url,
         datecreated,
-        publish
+        state
         ) VALUES (
         '" . base64_decode($data->title) . "',
         '" . base64_decode($data->content) . "',
@@ -274,13 +279,32 @@ switch($act) {
       //   array_push($rows, array(
       //       'id' => $row['id'],
       //       'title' => $row['title'],
-      //       'publish' => $row['publish'],
+      //       'state' => $row['state'],
       //       'url' => $row['url'],
       //       'subid' => $row['subid']
       //     )
       //   );
       // }
       echo json_encode([$result, $finish, $data, $mysqli->insert_id, $url, $_SESSION['data'], $_REQUEST['finish']]);
+    }
+    break;
+
+  case 'delete':
+    switch ($_REQUEST['type']) {
+      case 'article':
+        $result = q("DELETE FROM articles WHERE id = '" . $_REQUEST['id'] . "'");
+        echo json_encode($result);
+        break;
+
+      case 'category':
+        $result = q("DELETE FROM categories WHERE id = '" . $_REQUEST['id'] . "'");
+        echo json_encode($result);
+        break;
+
+      case 'user':
+        $result = q("DELETE FROM users WHERE id = '" . $_REQUEST['id'] . "'");
+        echo json_encode($result);
+        break;
     }
     break;
 
@@ -307,7 +331,7 @@ switch($act) {
     //   array_push($rows, array(
     //       'id' => $row['id'],
     //       'title' => $row['title'],
-    //       'publish' => $row['publish'],
+    //       'state' => $row['state'],
     //       'url' => $row['url'],
     //       'subid' => $row['subid']
     //     )
@@ -316,33 +340,15 @@ switch($act) {
     echo json_encode($code . '/' . $refresh);
     break;
 
-  case 'getArticles':
-    $data = json_decode(base64_decode($_REQUEST['data']));
-    $result = q("SELECT * FROM articles WHERE publish = 1 ORDER BY datecreated DESC");
-    $rows = array();
-    while ($row = $result->fetch_assoc()) {
-      array_push($rows, array(
-          'id' => $row['id'],
-          'title' => $row['title'],
-          'publish' => $row['publish'],
-          'content' => $row['content'],
-          'category' => $row['category'],
-          'datecreated' => date('H:i d.m.y', strtotime($row['datecreated']))
-        )
-      );
-    }
-    echo json_encode($rows);
-    break;
-
   case 'getUser':
     $data = json_decode(base64_decode($_REQUEST['data']));
-    $result = q("SELECT * FROM articles WHERE publish = 1 ORDER BY datecreated DESC");
+    $result = q("SELECT * FROM articles WHERE state = 1 ORDER BY datecreated DESC");
     $rows = array();
     while ($row = $result->fetch_assoc()) {
       array_push($rows, array(
           'id' => $row['id'],
           'title' => $row['title'],
-          'publish' => $row['publish'],
+          'state' => $row['state'],
           'content' => $row['content'],
           'category' => $row['category'],
           'datecreated' => date('H:i d.m.y', strtotime($row['datecreated']))

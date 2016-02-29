@@ -12,6 +12,26 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
   admin.article_content = '';
   admin.article_category = 1;
   admin.articleAdd = false;
+  admin.articleStateIcon = {
+    1: 'checkmark',
+    2: 'pushpin',
+    3: 'file-text2',
+    4: 'hour-glass',
+    5: 'warning',
+    6: 'copy',
+    7: 'pen',
+    8: 'blocked'
+  };
+  admin.articleStateColor = {
+    1: 'limegreen',
+    2: 'limegreen',
+    3: 'steelblue',
+    4: 'steelblue',
+    5: 'darkorange',
+    6: 'red',
+    7: 'red',
+    8: 'red'
+  };
   code = localStorage.getItem('code');
   
   if (code !== null && typeof code !== 'undefined' && code.length === 64) {
@@ -28,6 +48,19 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
     admin.categories = result.data;
     // $scope.user = data;
   });
+
+  admin.delete = function(type, id) {
+    if (confirm('Are you sure you want to delete it?')) {
+      $http.post('api.php?act=delete&type=' + type + '&id=' + id).then(function(result) {
+        console.info(result);
+        switch(type) {
+          case 'article':
+            getArticles();
+            break;
+        }
+      });
+    }
+  }
   
   getArticles();
   // $scope.article = {};

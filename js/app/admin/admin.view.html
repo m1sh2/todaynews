@@ -37,10 +37,109 @@
         
       </form>
     </div>
-    <div class="admin_article" ng-repeat="article in admin.articles track by $index">
-      <h4 class="title"><small class="datecreated">{{article.datecreated}}</small> <a href="{{article.category_url}}/{{article.url}}" target="_blank">{{article.title}}</a></h4>
+    <a href="" ng-model="article_states" ng-init="article_states = false" ng-click="article_states = !article_states">STATES</a>
+    <div ng-show="article_states">
+      <table width="100%">
+        <tr>
+          <th width="20"><i class="icon-checkmark" style="color: limegreen;"></i></th>
+          <th width="50">PUBLISHED</th>
+          <th width="50">MODERATED</th>
+          <th width="50">EDIT</th>
+          <th width="50">PAID</th>
+          <th>DESCRIPTION</th>
+        </tr>
+        <tr>
+          <td align="center"><i class="icon-checkmark" style="color: limegreen;"></i></td>
+          <td align="center"><span style="color: limegreen;">YES</span></td>
+          <td align="center"><span style="color: limegreen;">YES</span></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td align="center"><span style="color: limegreen;">YES</span></td>
+          <td>Published (moderated, close for edit)</td>
+        </tr>
+        <tr>
+          <td align="center"><i class="icon-pushpin" style="color: limegreen;"></i></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td align="center"><span style="color: limegreen;">YES</span></td>
+          <td align="center"><span style="color: limegreen;">YES</span></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td>Moderated, not published and open for edit</td>
+        </tr>
+        <tr>
+          <td align="center"><i class="icon-file-text2" style="color: steelblue;"></i></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td align="center"><span style="color: limegreen;">YES</span></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td>Waiting for moderation, not published, open for edit</td>
+        </tr>
+        <tr>
+          <td align="center"><i class="icon-hour-glass" style="color: steelblue;"></i></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td>On the moderation (locked for edit and not published)</td>
+        </tr>
+        <tr>
+          <td align="center"><i class="icon-warning" style="color: darkorange;"></i></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td align="center"><span style="color: limegreen;">YES</span></td>
+          <td align="center"><span style="color: limegreen;">YES</span></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td>Found some errors, not published, open for edit</td>
+        </tr>
+        <tr>
+          <td align="center"><i class="icon-copy" style="color: red;"></i></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td align="center"><span style="color: limegreen;">YES</span></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td>Question about article source, not published, open for edit</td>
+        </tr>
+        <tr>
+          <td align="center"><i class="icon-pen" style="color: red;"></i></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td align="center"><span style="color: limegreen;">YES</span></td>
+          <td align="center"><span style="color: limegreen;">YES</span></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td>Format issues, not published, open for edit</td>
+        </tr>
+        <tr>
+          <td align="center"><i class="icon-blocked" style="color: red;"></i></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td align="center"><span style="color: limegreen;">YES</span></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td align="center"><span style="color: red;">NO</span></td>
+          <td>Blocked, not published, close for edit</td>
+        </tr>
+      </table>
     </div>
 
+    <table width="100%">
+      <tr>
+        <th><i class="icon-checkmark" style="color: limegreen;"></i></th>
+        <th>DATE/TIME</th>
+        <th>CATEGORY</th>
+        <th>NAME</th>
+        <th>ACTIONS</th>
+      </tr>
+      <tr ng-repeat="article in admin.articles track by $index">
+        <td width="20" align="center">
+          <i class="icon-{{admin.articleStateIcon[article.state]}}" style="color: {{admin.articleStateColor[article.state]}};"></i>
+        </td>
+        <td width="110">
+          <small class="date">{{article.date}}</small> - <small class="date">{{article.time}}</small>
+        </td>
+        <td width="110">
+          {{article.category_name}}
+        </td>
+        <td><a href="{{article.category_url}}/{{article.url}}" target="_blank">{{article.title}}</a></td>
+        <td width="94" align="right">
+          <i class="icon-pencil btn" ng-click="admin.edit('article', article.id)"></i>
+          <i class="icon-trash btn" ng-click="admin.delete('article', article.id)"></i>
+        </td>
+      </tr>
+    </table>
   </div>
 
 
