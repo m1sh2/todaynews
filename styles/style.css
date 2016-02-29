@@ -129,6 +129,7 @@ tr td {}
   -webkit-transition: all linear 0.5s;
   -moz-transition: all linear 0.5s;
   transition: all linear 0.5s;
+  z-index: 1;
 }
 
 .close:hover {
