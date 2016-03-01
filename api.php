@@ -141,7 +141,7 @@ switch($act) {
 
     if ($category['id'] > 0) {
       $result = q("SELECT a.* FROM articles AS a
-        WHERE a.category = '" . $category['id'] . "'
+        WHERE a.category = '" . $category['id'] . "' AND a.state = 1
         ORDER BY a.datecreated DESC");
       
       $articles = array();
@@ -167,6 +167,7 @@ switch($act) {
   case 'getArticlesHome':
     $result = q("SELECT a.*, c.title AS category_name, c.url AS category_url FROM articles AS a
       INNER JOIN categories AS c ON c.id = a.category
+      WHERE a.state = 1
       ORDER BY a.datecreated DESC
       LIMIT 10");
     // $result = q("SELECT a.* FROM articles AS a WHERE a.category = 2 ORDER BY a.datecreated DESC");
