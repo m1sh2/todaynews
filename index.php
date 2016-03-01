@@ -36,6 +36,7 @@ session_start();
   <script src="./js/libs/angular.min.js"></script>
   <script src="./js/libs/angular-route.min.js"></script>
   <script src="./js/libs/angular-sanitize.min.js"></script>
+  <script src="./js/libs/angular-google.analytics.min.js"></script>
   <script src="./js/libs/ckeditor/ckeditor.js"></script>
   <script src="./js/libs/base64.js"></script>
   <script src="./js/libs/preload.js"></script>
@@ -84,7 +85,7 @@ session_start();
   
   
   <script src="https://code.angularjs.org/2.0.0-alpha.50/angular2.min.js"></script> -->
-  
+
 
   <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
