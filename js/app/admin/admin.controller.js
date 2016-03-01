@@ -8,30 +8,56 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
   var admin = this;
   admin.categories = [];
   admin.user = false;
+  admin.article_id = 0;
   admin.article_title = '';
   admin.article_content = '';
   admin.article_category = 1;
+  admin.article_state = 3;
   admin.articleAdd = false;
-  admin.articleStateIcon = {
-    1: 'checkmark',
-    2: 'pushpin',
-    3: 'file-text2',
-    4: 'hour-glass',
-    5: 'warning',
-    6: 'copy',
-    7: 'pen',
-    8: 'blocked'
+
+  admin.articleStates = {
+    1: {
+      title: 'Published',
+      color: 'limegreen',
+      icon: 'checkmark'
+    },
+    2: {
+      title: 'Moderated',
+      color: 'limegreen',
+      icon: 'pushpin'
+    },
+    3: {
+      title: 'New',
+      color: 'steelblue',
+      icon: 'file-text2'
+    },
+    4: {
+      title: 'On moderation',
+      color: 'steelblue',
+      icon: 'hour-glass'
+    },
+    5: {
+      title: 'Errors found',
+      color: 'darkorange',
+      icon: 'warning'
+    },
+    6: {
+      title: 'Source issue',
+      color: 'red',
+      icon: 'copy'
+    },
+    7: {
+      title: 'Format issue',
+      color: 'red',
+      icon: 'pen'
+    },
+    8: {
+      title: 'Blocked',
+      color: 'red',
+      icon: 'blocked'
+    }
   };
-  admin.articleStateColor = {
-    1: 'limegreen',
-    2: 'limegreen',
-    3: 'steelblue',
-    4: 'steelblue',
-    5: 'darkorange',
-    6: 'red',
-    7: 'red',
-    8: 'red'
-  };
+
   code = localStorage.getItem('code');
   
   if (code !== null && typeof code !== 'undefined' && code.length === 64) {
@@ -61,6 +87,25 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
       });
     }
   }
+
+  admin.edit = function(type, id) {
+    $http.post('api.php?act=edit&type=' + type + '&id=' + id).then(function(result) {
+      // console.info(result);
+      switch(type) {
+        case 'article':
+          // getArticles();
+          admin.article_id = result.data.id;
+          admin.article_title = Base64.decode(result.data.title);
+          admin.article_content = Base64.decode(result.data.content);
+          admin.article_category = result.data.category;
+          admin.article_state = result.data.state;
+          admin.articleAdd = true;
+          CKEDITOR.instances.article_content.destroy();
+          CKEDITOR.replace('article_content');
+          break;
+      }
+    });
+  }
   
   getArticles();
   // $scope.article = {};
@@ -68,9 +113,11 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
     // console.info(f, $scope.article_title);
     admin.article_content = CKEDITOR.instances.article_content.getData();
     var data = {};
+    data.id = admin.article_id;
     data.title = Base64.encode(admin.article_title);
     data.content = Base64.encode(admin.article_content);
     data.category = admin.article_category;
+    data.state = admin.article_state;
     var dataEncoded = Base64.encode(JSON.stringify(data));
     // console.info(dataEncoded.length);
     if (dataEncoded.length > 2000) {
@@ -93,9 +140,11 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
             getArticles();
             CKEDITOR.instances.article_content.destroy();
             CKEDITOR.replace('article_content');
+            admin.article_id = 0;
             admin.article_title = '';
             admin.article_content = '';
             admin.article_category = 1;
+            admin.article_state = 3;
             admin.articleAdd = false;
             preload.remove(document.querySelector('form[name="addArticleForm"]'));
           });
@@ -107,9 +156,11 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
         getArticles();
         CKEDITOR.instances.article_content.destroy();
         CKEDITOR.replace('article_content');
+        admin.article_id = 0;
         admin.article_title = '';
         admin.article_content = '';
         admin.article_category = 1;
+        admin.article_state = 3;
         admin.articleAdd = false;
         
         // $scope.user = data;

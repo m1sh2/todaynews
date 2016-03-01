@@ -26,9 +26,8 @@ h5 a:visited,
 h6 a:visited,
 h1 a,h2 a,h3 a,h4 a,h5 a,h6 a {text-decoration: none;color: #333;}
 p {margin: 10px 0 10px;line-height: 150%;}
-a {text-decoration: underline;color: #0066cc;}
-a:hover {text-decoration: none;color: #0088cc;}
-a:visited {text-decoration: underline;color: #0088cc;}
+a, a:visited {text-decoration: underline;color: #0066cc;}
+a:hover, a:visited:hover {text-decoration: none;color: #0088cc;}
 ul,ol {margin: 10px 0 10px 20px;}
 ul {list-style: disc inside;}
 ol {list-style: decimal inside;}

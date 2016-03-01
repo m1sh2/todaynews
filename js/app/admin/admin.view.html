@@ -9,6 +9,16 @@
       <form name="addArticleForm" ng-submit="admin.addArticle(this)">
         <div class="drow">
           <div class="dcol14">
+            <h5><label>State</label></h5>
+          </div>
+          <div class="dcol34">
+            <select name="state" ng-model="admin.article_state">
+              <option value="{{id}}" ng-repeat="(id, state) in admin.articleStates">{{state.title}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="drow">
+          <div class="dcol14">
             <h5><label>Category</label></h5>
           </div>
           <div class="dcol34">
@@ -70,7 +80,7 @@
           <td align="center"><span style="color: red;">NO</span></td>
           <td align="center"><span style="color: limegreen;">YES</span></td>
           <td align="center"><span style="color: red;">NO</span></td>
-          <td>Waiting for moderation, not published, open for edit</td>
+          <td>Waiting for moderation, not published, open for edit, new article</td>
         </tr>
         <tr>
           <td align="center"><i class="icon-hour-glass" style="color: steelblue;"></i></td>
@@ -125,7 +135,9 @@
       </tr>
       <tr ng-repeat="article in admin.articles track by $index">
         <td width="20" align="center">
-          <i class="icon-{{admin.articleStateIcon[article.state]}}" style="color: {{admin.articleStateColor[article.state]}};"></i>
+          <i
+            class="icon-{{admin.articleStates[article.state].icon}}"
+            style="color: {{admin.articleStates[article.state].color}};"></i>
         </td>
         <td width="110">
           <small class="date">{{article.date}}</small> - <small class="date">{{article.time}}</small>
@@ -144,9 +156,26 @@
 
 
   <h2>Categories</h2>
-  <div ng-repeat="category in admin.categories track by $index">
-    <a href="{{category.url}}" target="_blank">{{category.title}}</a>
-  </div>
+
+  <table width="100%">
+    <tr>
+      <th><i class="icon-checkmark" style="color: limegreen;"></i></th>
+      <th>NAME</th>
+      <th>ACTIONS</th>
+    </tr>
+    <tr ng-repeat="category in admin.categories track by $index">
+      <td width="20" align="center">
+        <i
+          class="icon-{{admin.articleStates[category.state].icon}}"
+          style="color: {{admin.articleStates[category.state].color}};"></i>
+      </td>
+      <td><a href="{{category.url}}" target="_blank">{{category.title}}</a></td>
+      <td width="94" align="right">
+        <i class="icon-pencil btn" ng-click="admin.edit('category', category.id)"></i>
+        <i class="icon-trash btn" ng-click="admin.delete('category', category.id)"></i>
+      </td>
+    </tr>
+  </table>
 
 
 </div>

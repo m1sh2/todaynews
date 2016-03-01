@@ -258,21 +258,34 @@ switch($act) {
       // echo $url;
       // exit();
 
-      $result = q("INSERT INTO articles (
-        title,
-        content,
-        category,
-        url,
-        datecreated,
-        state
-        ) VALUES (
-        '" . base64_decode($data->title) . "',
-        '" . base64_decode($data->content) . "',
-        '" . $data->category . "',
-        '" . $url . "',
-        '" . strtotime(date('Y-m-d H:i:s')) . "',
-        1
-        )");
+      if ($data->id > 0) {
+        $result = q("UPDATE articles SET
+          title = '" . base64_decode($data->title) . "',
+          content = '" . base64_decode($data->content) . "',
+          category = '" . $data->category . "',
+          datemodified = '" . strtotime(date('Y-m-d H:i:s')) . "',
+          state = '" . $data->state . "'
+          WHERE id = '" . $data->id . "'");
+      } else {
+        $result = q("INSERT INTO articles (
+          title,
+          content,
+          category,
+          url,
+          datecreated,
+          state
+          ) VALUES (
+          '" . base64_decode($data->title) . "',
+          '" . base64_decode($data->content) . "',
+          '" . $data->category . "',
+          '" . $url . "',
+          '" . strtotime(date('Y-m-d H:i:s')) . "',
+          '" . $data->state . "'
+          )");
+      }
+      
+
+      
       
       // $rows = array();
       // while ($row = $result->fetch_assoc()) {
@@ -305,6 +318,40 @@ switch($act) {
         $result = q("DELETE FROM users WHERE id = '" . $_REQUEST['id'] . "'");
         echo json_encode($result);
         break;
+    }
+    break;
+
+  case 'edit':
+    switch ($_REQUEST['type']) {
+      case 'article':
+        $result = q("SELECT a.* FROM articles AS a
+          WHERE a.id = '" . $_REQUEST['id'] . "'");
+        // $result = q("SELECT a.* FROM articles AS a WHERE a.category = 2 ORDER BY a.datecreated DESC");
+        
+        $rows = array();
+        while ($row = $result->fetch_assoc()) {
+          array_push($rows, array(
+              'id' => $row['id'],
+              'title' => base64_encode($row['title']),
+              'state' => $row['state'],
+              'url' => $row['url'],
+              'category' => $row['category'],
+              'content' => base64_encode($row['content'])
+            )
+          );
+        }
+        echo json_encode($rows[0]);
+        break;
+
+      // case 'category':
+      //   $result = q("DELETE FROM categories WHERE id = '" . $_REQUEST['id'] . "'");
+      //   echo json_encode($result);
+      //   break;
+
+      // case 'user':
+      //   $result = q("DELETE FROM users WHERE id = '" . $_REQUEST['id'] . "'");
+      //   echo json_encode($result);
+      //   break;
     }
     break;
 
