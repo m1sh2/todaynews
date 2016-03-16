@@ -1,19 +1,55 @@
 
-app.controller('MainCtrl', ['$scope', '$http', '$route', '$location', MainCtrl]);
+app.controller('MainCtrl', ['$scope', 'xhr', '$route', '$location', '$routeParams', '$rootScope', MainCtrl]);
 
-function MainCtrl($scope, $http, $route, $location) {
+function MainCtrl($scope, xhr, $route, $location, $routeParams, $rootScope) {
   $scope.title = '2323sdsd';
   var main = this;
   var code = null;
   main._location = $location;
-  // console.info($route);
+  console.info($location);
   main.loginDropdown = false;
   main.user = false;
-  $http.get('api.php?act=getUser').then(function(result) {
+  main.cat = '';
+  xhr.get('api.php?act=getUser', {}, function(result) {
     // console.info(result.data);
 
     // $scope.categories = result.data;
   });
+
+  main.bannerId = 0;
+
+  main.banners = [
+    {
+      id: 123,
+      image: 'images/banners/banner1.png',
+      link: 'http://datsko.it',
+      cat: 'obrazovaniye'
+    }
+  ];
+
+  
+
+  main.bannerClick = function() {
+    // console.info(main.banners[main.bannerId].link);
+    for (var i = 0; i < main.banners.length; i++) {
+      if (main.banners[i].id == main.bannerId) {
+        // main.banner = '<a href="' + main.banners[i].link + '" target="_blank" rel="nofollow">\
+        //     <img src="' + main.banners[i].image + '">\
+        //   </a>';
+
+        // main.bannerId = main.banners[i].id;
+
+        xhr.post('api.php?act=addBannerClick', {banner_id: main.banners[i].id, category: main.banners[i].cat}, function(result) {
+          console.info(result.data);
+
+          // $scope.categories = result.data;
+        });
+        return
+      } else {
+        main.banner = '';
+      }
+    }
+  }
 
   main.email = '';
   main.password = '';
@@ -25,8 +61,36 @@ function MainCtrl($scope, $http, $route, $location) {
   //   main.user = null;
   //   displayLogin();
   }
+
+  $rootScope.$on('$locationChangeSuccess', function () {
+    var cat = $location.path();
+    cat = cat.split('/');
+    cat = cat[1];
+    main.cat = cat;
+
+    for (var i = 0; i < main.banners.length; i++) {
+      if (main.banners[i].cat == main.cat) {
+        main.banner = '<a href="' + main.banners[i].link + '" target="_blank" rel="nofollow">\
+            <img src="' + main.banners[i].image + '">\
+          </a>';
+
+        main.bannerId = main.banners[i].id;
+
+        xhr.post('api.php?act=addBannerShow', {banner_id: main.banners[i].id, category: main.banners[i].cat}, function(result) {
+          console.info(result.data);
+
+          // $scope.categories = result.data;
+        });
+        return
+      } else {
+        main.banner = '';
+      }
+    }
+    
+    // console.info('cat', cat);
+  });
   
-  // $http.get('api.php?act=getCategories').success(function(data) {
+  // xhr.get('api.php?act=getCategories').success(function(data) {
   //   console.info(data);
 
   //   $scope.user = data;
@@ -39,10 +103,10 @@ function MainCtrl($scope, $http, $route, $location) {
   main.error = '';
   main.runLogin = function() {
     main.btn = 'disabled';
-    $http.post('api.php?act=runLogin&data=' + Base64.encode(JSON.stringify({
+    xhr.post('api.php?act=runLogin', {
       email: main.email,
       password: main.password
-    }))).then(function(result) {
+    }, function(result) {
       // console.info(result.data);
       if (!result.data.error) {
         localStorage.setItem('code', result.data.code);

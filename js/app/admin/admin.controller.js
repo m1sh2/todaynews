@@ -1,8 +1,8 @@
 'use strict';
 
-app.controller('AdminCtrl', ['$scope', '$http', '$routeParams', '$sce', '$location', AdminCtrl]);
+app.controller('AdminCtrl', ['$scope', 'xhr', '$routeParams', '$sce', '$location', AdminCtrl]);
 
-function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
+function AdminCtrl($scope, xhr, $routeParams, $sce, $location) {
   // console.info(1234, $routeParams.category);
   var code = null;
   var admin = this;
@@ -68,7 +68,7 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
     $location.path("/login");
   }
 
-  $http.post('api.php?act=getCategories').then(function(result) {
+  xhr.post('api.php?act=getCategoriesAdmin', {}, function(result) {
     // console.info(result);
     // getArticles();
     admin.categories = result.data;
@@ -77,7 +77,10 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
 
   admin.delete = function(type, id) {
     if (confirm('Are you sure you want to delete it?')) {
-      $http.post('api.php?act=delete&type=' + type + '&id=' + id).then(function(result) {
+      xhr.post('api.php?act=delete', {
+        type: type,
+        id: id
+      }, function(result) {
         console.info(result);
         switch(type) {
           case 'article':
@@ -89,7 +92,10 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
   }
 
   admin.edit = function(type, id) {
-    $http.post('api.php?act=edit&type=' + type + '&id=' + id).then(function(result) {
+    xhr.post('api.php?act=edit', {
+      type: type,
+      id: id
+    }, function(result) {
       // console.info(result);
       switch(type) {
         case 'article':
@@ -128,14 +134,14 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
       function sendPart(i) {
         preload.run(document.querySelector('form[name="addArticleForm"]'), 100 / parts.length * (i + 1) );
         if (i + 1 < parts.length) {
-          $http.post('api.php?act=addArticle&part=' + parts[i]).then(function(result) {
+          xhr.post('api.php?act=addArticle&part=' + parts[i], {}, function(result) {
             // console.info(i, parts.length);
             setTimeout(function() {
               sendPart(i + 1);
             }, 1000);
           });
         } else {
-          $http.post('api.php?act=addArticle&finish=' + parts[i]).then(function(result) {
+          xhr.post('api.php?act=addArticle&finish=' + parts[i], {}, function(result) {
             // console.info(i, 'finish');
             getArticles();
             CKEDITOR.instances.article_content.destroy();
@@ -151,7 +157,7 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
         }
       }
     } else {
-      $http.post('api.php?act=addArticle&data=' + Base64.encode(JSON.stringify(data))).then(function(result) {
+      xhr.post('api.php?act=addArticle', data, function(result) {
         // console.info(result);
         getArticles();
         CKEDITOR.instances.article_content.destroy();
@@ -169,7 +175,7 @@ function AdminCtrl($scope, $http, $routeParams, $sce, $location) {
   }
 
   function getArticles() {
-    $http.get('api.php?act=getArticlesAdmin').then(function(result) {
+    xhr.get('api.php?act=getArticlesAdmin', {}, function(result) {
       // console.info(result);
       admin.articles = result.data;
       // $scope.user = data;

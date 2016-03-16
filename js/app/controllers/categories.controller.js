@@ -1,12 +1,12 @@
 'use strict';
 
-app.controller('CategoriesCtrl', ['$scope', '$http', '$routeParams', '$sce', ArticlesCtrl]);
+app.controller('CategoriesCtrl', ['$scope', 'xhr', '$routeParams', '$sce', ArticlesCtrl]);
 
-function ArticlesCtrl($scope, $http, $routeParams, $sce) {
+function ArticlesCtrl($scope, xhr, $routeParams, $sce) {
   var cats = this;
   // console.info(1234, $routeParams.category);
   $scope.category = $routeParams.category;
-  $http.get('api.php?act=getCategories').then(function(result) {
+  xhr.get('api.php?act=getCategories', {}, function(result) {
     // console.info(result.data);
 
     cats.categories = result.data;

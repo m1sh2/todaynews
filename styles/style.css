@@ -77,8 +77,8 @@ th {text-align: center;font-weight: bold;vertical-align: middle;}
 tr td {}
 
 ::-webkit-scrollbar {
-  width: 4px;  /* for vertical scrollbars */
-  height: 4px; /* for horizontal scrollbars */
+  width: 10px;  /* for vertical scrollbars */
+  height: 10px; /* for horizontal scrollbars */
 }
 
 ::-webkit-scrollbar-track {

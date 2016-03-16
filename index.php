@@ -1,8 +1,7 @@
 <?php
 session_start();
-?>
 
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html ng-app="INFA">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -56,6 +55,9 @@ session_start();
   <script src="./js/app/admin/admin.controller.js"></script>
   <script src="./js/app/login/login.controller.js"></script>
   <script src="./js/app/signup/signup.controller.js"></script>
+
+  <!-- Services -->
+  <script src="./js/app/services/xhr.srv.js"></script>
   
 
 
@@ -78,35 +80,17 @@ session_start();
     // System.import('app')
     //   .catch(console.error.bind(console));
   </script>
-
-
-<!--     
-  
-  
-  
-  <script src="https://code.angularjs.org/2.0.0-alpha.50/angular2.min.js"></script> -->
-
-
-  <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-74505552-1', 'auto');
-    ga('send', 'pageview');
-
-  </script>
 </head>
 <body>
 <div class="container" ng-controller="MainCtrl as main">
   <header>
-    <a href="/" class="logo">IN <span>FA</span></a>
+    <a href="/" class="logo" ng-click="main.cat = ''">IN <span>FA</span></a>
     <div class="menu-top">
       <a href="/about">О сервисе</a>
-      <a href="javascript:void(0)" ng-click="main.loginDropdown = !main.loginDropdown" class="dropdown-link">Войти</a>
+      <!-- <a href="javascript:void(0)" ng-click="main.loginDropdown = !main.loginDropdown" class="dropdown-link">Войти</a> -->
+      <div class="dropdown dropdown-menu-top-bg" ng-show="main.loginDropdown" ng-click="main.loginDropdown = !main.loginDropdown"></div>
       <div class="dropdown dropdown-menu-top" ng-show="main.loginDropdown">
-        <h4>Login</h4>
+        <!-- <h4>Login</h4>
         <h5 ng-show="!!main.user">{{main.user}}</h5>
         <div ng-show="!main.user">
         <a href="#" ng-click="main.loginDropdown = !main.loginDropdown;runLogin()">Login</a>
@@ -117,24 +101,26 @@ session_start();
         <a href="/admin" ng-click="main.loginDropdown = !main.loginDropdown">Admin</a>
         <div>
         <a href="/signup" ng-click="main.loginDropdown = !main.loginDropdown">Signup</a>
-        </div>
+        </div> -->
       </div>
     </div>
     <div id="categories" ng-controller="CategoriesCtrl as cats">
-      <a href="{{category.url}}" ng-repeat="category in cats.categories">{{category.title}}</a>
+      <a href="{{category.url}}" ng-class="{'active' : main.cat == category.url}" ng-repeat="category in cats.categories" ng-click="main.cat = category.url">{{category.title}}</a>
     </div>
   </header>
   <div class="content">
     <div class="drow">
       <div class="dcol11">
         <div class="bredcrumbs"></div>
+        <div class="banner-top" ng-if="main.banner" ng-bind-html="main.banner" ng-click="main.bannerClick()"></div>
         <div class="page {{ pageClass }}" ng-view></div>
       </div>
     </div>
   </div>
   <footer>
-    &copy; IN|FA, 2016
+    &copy; IN - FA, 2016
   </footer>
 </div>
 </body>
 </html>
+

@@ -22,6 +22,28 @@ require_once('./php/transliteration/JTransliteration.php');
 // }
 
 $act = isset($_POST['act']) ? $_POST['act'] : $_GET['act'];
+$act2 = isset($_POST['act2']) ? $_POST['act2'] : $_GET['act2'];
+$act3 = isset($_POST['act3']) ? $_POST['act3'] : $_GET['act3'];
+
+// echo json_encode([$_REQUEST, $act]);
+// echo json_encode($_POST);
+// echo $act;
+$data = json_decode(base64_decode($_REQUEST['data']));
+
+if ((
+    $act == 'getCategoriesAdmin'
+    || $act == 'delete'
+    || $act == 'edit'
+    || $act == 'addArticle'
+    || $act == 'getArticlesAdmin'
+  ) && (
+    !isset($_SESSION['user_id'])
+    || !is_numeric($_SESSION['user_id'])
+    || $_SESSION['user_id'] <= 0
+  )) {
+  echo json_encode(array('error' => 'login'));
+  exit();
+}
 
 // echo json_encode([$_REQUEST, $act]);
 // echo json_encode($_POST);
@@ -72,7 +94,6 @@ switch($act) {
     $end = 24 - $start;
     $start = GUI($start);
     $end = GUI($end);
-    $data = json_decode(base64_decode($_REQUEST['data']));
 
     $result = q("SELECT id, email FROM users WHERE email = '" . $data->email . "' AND password = '" . $data->password . "'");
 
@@ -103,7 +124,10 @@ switch($act) {
         )");
       
       // echo json_encode([$result, 123, $data, $mysqli->insert_id]);
-      echo json_encode(['code' => $start . $session_id . $end, 'user' => $user->email]);
+      $_SESSION['user_id'] = $user['id'];
+      echo json_encode(['code' => $start . $session_id . $end, 'user' => $user['email']]);
+
+      // echo true;
     } else {
       echo json_encode(['error' => 'Error']);
     }
@@ -113,12 +137,12 @@ switch($act) {
     break;
 
   case 'runSignup':
-    $data = json_decode(base64_decode($_REQUEST['data']));
     $result = q("INSERT INTO users (email) VALUES ('" . $data->title . "')");
     
     echo json_encode([$result, 123, $data, $mysqli->insert_id]);
     break;
 
+  case 'getCategoriesAdmin':
   case 'getCategories':
     $result = q("SELECT * FROM categories WHERE state = 1 ORDER BY title ASC");
     $rows = array();
@@ -136,7 +160,7 @@ switch($act) {
     break;
 
   case 'getArticles':
-    $result = q("SELECT c.* FROM categories AS c WHERE c.url = '" . $_GET['category_url'] . "'");
+    $result = q("SELECT c.* FROM categories AS c WHERE c.url = '" . $data->category_url . "'");
     $category = $result->fetch_assoc();
 
     if ($category['id'] > 0) {
@@ -149,8 +173,10 @@ switch($act) {
         array_push($articles, array(
             'id' => $article['id'],
             'title' => $article['title'],
+            'content' => $article['content'],
             'state' => $article['state'],
             'url' => $article['url'],
+            'category_title' => $category['title'],
             'category_url' => $category['url'],
             'date' => date('d.m.Y', $article['datecreated']),
             'time' => date('H:i', $article['datecreated']),
@@ -165,7 +191,7 @@ switch($act) {
     break;
 
   case 'getArticlesHome':
-    $result = q("SELECT a.*, c.title AS category_name, c.url AS category_url FROM articles AS a
+    $result = q("SELECT a.*, c.title AS category_title, c.url AS category_url FROM articles AS a
       INNER JOIN categories AS c ON c.id = a.category
       WHERE a.state = 1
       ORDER BY a.datecreated DESC
@@ -177,8 +203,10 @@ switch($act) {
       array_push($rows, array(
           'id' => $row['id'],
           'title' => $row['title'],
+          'content' => $row['content'],
           'state' => $row['state'],
           'url' => $row['url'],
+          'category_title' => $row['category_title'],
           'category_url' => $row['category_url'],
           'date' => date('d.m.Y', $row['datecreated']),
           'time' => date('H:i', $row['datecreated']),
@@ -209,7 +237,8 @@ switch($act) {
           'time' => date('H:i', $row['datecreated']),
           'subid' => $row['subid'],
           'cost' => $row['cost'],
-          'paid' => $row['paid']
+          'paid' => $row['paid'],
+          'content' => $row['content']
         )
       );
     }
@@ -323,10 +352,10 @@ switch($act) {
     break;
 
   case 'edit':
-    switch ($_REQUEST['type']) {
+    switch ($data->type) {
       case 'article':
         $result = q("SELECT a.* FROM articles AS a
-          WHERE a.id = '" . $_REQUEST['id'] . "'");
+          WHERE a.id = '" . $data->id . "'");
         // $result = q("SELECT a.* FROM articles AS a WHERE a.category = 2 ORDER BY a.datecreated DESC");
         
         $rows = array();
@@ -357,7 +386,6 @@ switch($act) {
     break;
 
   case 'addUser':
-    $data = json_decode(base64_decode($_REQUEST['data']));
     $code = crypt($data->email . strtotime(date('Y-m-d H:i:s')) . 'code', $data->password);
     $refresh = crypt($code, $data->password);
     $result = q("INSERT INTO users (
@@ -374,22 +402,58 @@ switch($act) {
       '" . crypt($data->password, $data->password) . "'
       )");
     
-    // $rows = array();
-    // while ($row = $result->fetch_assoc()) {
-    //   array_push($rows, array(
-    //       'id' => $row['id'],
-    //       'title' => $row['title'],
-    //       'state' => $row['state'],
-    //       'url' => $row['url'],
-    //       'subid' => $row['subid']
-    //     )
-    //   );
-    // }
     echo json_encode($code . '/' . $refresh);
     break;
 
+  case 'addBannerShow':
+    $result = q("INSERT INTO banners_show (
+        banner_id,
+        category,
+        os,
+        browser,
+        ip,
+        ip2,
+        ip3,
+        date_created
+      ) VALUES (
+        '" . $data->banner_id . "',
+        '" . $data->category . "',
+        '" . php_uname('a') . "',
+        '" . $_SERVER['HTTP_USER_AGENT'] . "',
+        '" . $_SERVER['REMOTE_ADDR'] . "',
+        '" . $_SERVER['HTTP_X_FORWARDED_FOR'] . "',
+        '" . $_SERVER['HTTP_CLIENT_IP'] . "',
+        '" . strtotime(date('Y-m-d H:i:s')) . "'
+      )");
+    
+    echo json_encode($result);
+    break;
+
+  case 'addBannerClick':
+    $result = q("INSERT INTO banners_click (
+        banner_id,
+        category,
+        os,
+        browser,
+        ip,
+        ip2,
+        ip3,
+        date_created
+      ) VALUES (
+        '" . $data->banner_id . "',
+        '" . $data->category . "',
+        '" . php_uname('a') . "',
+        '" . $_SERVER['HTTP_USER_AGENT'] . "',
+        '" . $_SERVER['REMOTE_ADDR'] . "',
+        '" . $_SERVER['HTTP_X_FORWARDED_FOR'] . "',
+        '" . $_SERVER['HTTP_CLIENT_IP'] . "',
+        '" . strtotime(date('Y-m-d H:i:s')) . "'
+      )");
+    
+    echo json_encode($result);
+    break;
+
   case 'getUser':
-    $data = json_decode(base64_decode($_REQUEST['data']));
     $result = q("SELECT * FROM articles WHERE state = 1 ORDER BY datecreated DESC");
     $rows = array();
     while ($row = $result->fetch_assoc()) {

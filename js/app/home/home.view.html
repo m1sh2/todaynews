@@ -1,9 +1,10 @@
-<h2>IN|FA</h2>
 
 
-<div class="article" ng-repeat="article in home.articles">
-  <h4 class="title">
-    <small class="date">{{article.date}}</small> - <small class="time">{{article.time}}</small>
-    &nbsp;<a href="/{{article.category_url}}/{{article.url}}">{{article.title}}</a>
-  </h4>
-</div>
+<a class="article" ng-repeat="article in home.articles" href="/{{article.category_url}}/{{article.url}}">
+	<div class="article-date"><span class="date">{{article.date}}</span> - <span class="time">{{article.time}}</span></div>
+  	<div class="article-category">{{article.category_title}}</div>
+  	<h4 class="article-title">
+    	{{article.title}}
+  	</h4>
+  	<div class="article-content" ng-bind-html="article.content"></div>
+</a>

@@ -4,7 +4,7 @@
 [class*="dcol"]:last-child{border-width: 0 0 0 10px;}
 [class*="dcol"]:first-child:last-child{border-width: 0 0 0 0px;}
 [class*="dcol"] img{max-width: 100%;}
-[class*="dcol"] *:first-child {margin-top: 0;}
+[class*="dcol"]>*:first-child {margin-top: 0;}
 [class*="dcol"].cntr {text-align: center;}
 .drow.dh [class*="dcol"]{font-weight:bold;text-align: center;background:#bbb;}
 
