@@ -220,8 +220,7 @@ switch($act) {
   case 'getArticlesAdmin':
     $result = q("SELECT a.*, c.title AS category_name, c.url AS category_url FROM articles AS a
       INNER JOIN categories AS c ON c.id = a.category
-      ORDER BY a.datecreated DESC
-      LIMIT 10");
+      ORDER BY a.datecreated DESC");
     // $result = q("SELECT a.* FROM articles AS a WHERE a.category = 2 ORDER BY a.datecreated DESC");
     
     $rows = array();
@@ -266,9 +265,7 @@ switch($act) {
     echo json_encode($rows[0]);
     break;
 
-  case 'addArticle':
-    
-      
+  case 'addArticle':  
     if (isset($_REQUEST['part'])) {
       if (!isset($_SESSION['data'])) {
         $_SESSION['data'] = '';
