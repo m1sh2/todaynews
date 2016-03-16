@@ -248,7 +248,7 @@ switch($act) {
   case 'getArticle':
     $result = q("SELECT a.* FROM categories AS c
       INNER JOIN articles AS a ON a.category = c.id
-      WHERE c.url = '" . $_GET['category'] . "' AND a.url = '" . $_GET['article'] . "'
+      WHERE c.url = '" . $data->category . "' AND a.url = '" . $data->article . "'
       ORDER BY a.datecreated DESC");
     // $result = q("SELECT a.* FROM articles AS a WHERE a.category = 2 ORDER BY a.datecreated DESC");
     
