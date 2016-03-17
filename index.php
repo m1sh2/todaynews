@@ -86,7 +86,7 @@ session_start();
   <header>
     <a href="/" class="logo" ng-click="main.cat = ''">IN <span>FA</span></a>
     <div class="menu-top">
-      <a href="/about">О сервисе</a>
+      
       <!-- <a href="javascript:void(0)" ng-click="main.loginDropdown = !main.loginDropdown" class="dropdown-link">Войти</a> -->
       <div class="dropdown dropdown-menu-top-bg" ng-show="main.loginDropdown" ng-click="main.loginDropdown = !main.loginDropdown"></div>
       <div class="dropdown dropdown-menu-top" ng-show="main.loginDropdown">
@@ -118,7 +118,13 @@ session_start();
     </div>
   </div>
   <footer>
+    <div class="menu-footer">
+      <a href="/about">О сервисе</a>
+      <a href="/terms">Условия использования</a>
+      <a href="/adv">Реклама</a>
+    </div>
     &copy; IN - FA, 2016
+
   </footer>
 </div>
 </body>
