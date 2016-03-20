@@ -1,12 +1,11 @@
 <?php
 session_start();
-
 ?><!DOCTYPE html>
 <html ng-app="INFA">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <base href="/">
-  <title>IN|FA</title>
+  <title>IN-FA</title>
   <link href="images/favicon.png" rel="icon">
   <link rel="stylesheet" href="styles/style.css" type="text/css" />
   <link rel="stylesheet" href="styles/grid.css" type="text/css" />
@@ -84,47 +83,29 @@ session_start();
 <body>
 <div class="container" ng-controller="MainCtrl as main">
   <header>
-    <a href="/" class="logo" ng-click="main.cat = ''">IN <span>FA</span></a>
-    <div class="menu-top">
-      
-      <!-- <a href="javascript:void(0)" ng-click="main.loginDropdown = !main.loginDropdown" class="dropdown-link">Войти</a> -->
-      <div class="dropdown dropdown-menu-top-bg" ng-show="main.loginDropdown" ng-click="main.loginDropdown = !main.loginDropdown"></div>
-      <div class="dropdown dropdown-menu-top" ng-show="main.loginDropdown">
-        <!-- <h4>Login</h4>
-        <h5 ng-show="!!main.user">{{main.user}}</h5>
-        <div ng-show="!main.user">
-        <a href="#" ng-click="main.loginDropdown = !main.loginDropdown;runLogin()">Login</a>
-        </div>
-        <div ng-show="!!main.user">
-        <a href="#" ng-click="main.loginDropdown = !main.loginDropdown;main.runLogout()">Logout</a>
-        </div>
-        <a href="/admin" ng-click="main.loginDropdown = !main.loginDropdown">Admin</a>
-        <div>
-        <a href="/signup" ng-click="main.loginDropdown = !main.loginDropdown">Signup</a>
-        </div> -->
-      </div>
-    </div>
+    <div class="banner-top" ng-if="main.banners.top" ng-bind-html="main.banners.top.image" ng-click="main.bannerClick('top')"></div>
     <div id="categories" ng-controller="CategoriesCtrl as cats">
+      <a href="/" class="logo" ng-click="main.cat = ''">IN <span>FA</span></a>
       <a href="{{category.url}}" ng-class="{'active' : main.cat == category.url}" ng-repeat="category in cats.categories" ng-click="main.cat = category.url">{{category.title}}</a>
     </div>
   </header>
   <div class="content">
-    <div class="drow">
-      <div class="dcol11">
-        <div class="bredcrumbs"></div>
-        <div class="banner-top" ng-if="main.banner" ng-bind-html="main.banner" ng-click="main.bannerClick()"></div>
-        <div class="page {{ pageClass }}" ng-view></div>
-      </div>
-    </div>
+    <div class="page {{ pageClass }}" ng-view></div>
+    <div class="banner-bottom" ng-if="main.banners.bottom" ng-bind-html="main.banners.bottom.image" ng-click="main.bannerClick('bottom')"></div>
   </div>
   <footer>
-    <div class="menu-footer">
+    <div class="menu">
       <a href="/about">О сервисе</a>
       <a href="/terms">Условия использования</a>
       <a href="/adv">Реклама</a>
+      <a href="/contacts">Контакты</a>
+      <div class="logo">
+        <img src="/images/infa-logo-grey-32.png"> IN FA
+      </div>
     </div>
-    &copy; IN - FA, 2016
-
+    <div class="copyright">
+      &copy;2016 IN-FA. Все материалы сайта защищены авторским правом. При ссылке на материал (статью) или группу материалов (категорию, группу статей) ссылка на http://infa.co.ua обязательна. Ссылка должна быть индексируема поисковыми системами и кликабельна. Усли вы нашли ошибку в материале (статье), сообщите нам об этом любым из способов, указанных в разделе "<a href="/contacts">Контакты</a>".
+    </div>
   </footer>
 </div>
 </body>

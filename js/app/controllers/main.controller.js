@@ -18,14 +18,25 @@ function MainCtrl($scope, xhr, $route, $location, $routeParams, $rootScope) {
 
   main.bannerId = 0;
 
-  main.banners = [
-    {
-      id: 123,
-      image: 'images/banners/banner1.png',
-      link: 'http://datsko.it',
-      cat: 'obrazovaniye'
-    }
-  ];
+  main.banners = {};
+  main.banners.top = {
+    id: 123,
+    image: '<img src="http://lmd.lk/wp-content/themes/twentytwelve/images/output_dWt0vW.gif">',
+    link: 'http://datsko.it',
+    cat: 'obrazovaniye'
+  };
+  main.banners.right = {
+    id: 123,
+    image: '<img src="images/banners/banner1.png">',
+    link: 'http://datsko.it',
+    cat: 'obrazovaniye'
+  };
+  main.banners.bottom = {
+    id: 123,
+    image: '<img src="images/banners/banner1.png">',
+    link: 'http://datsko.it',
+    cat: 'obrazovaniye'
+  };
 
   
 

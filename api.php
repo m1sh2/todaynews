@@ -1,33 +1,14 @@
 <?php
 session_start();
 // $mysql_link = mysql_connect('datsko.mysql.ukraine.com.ua', 'datsko_todaynews', 'rvbef8vy');
-
+define('ENV', $_SERVER['HTTP_HOST'] == 'infa.loc.ua' ? 'LOC' : 'LIVE');
 require_once('./php/transliteration/JTransliteration.php');
-
-/* return name of current default database */
-// if ($result = $mysqli->query("SELECT DATABASE()")) {
-//     $row = $result->fetch_row();
-//     printf("Default database is %s.\n", $row[0]);
-//     $result->close();
-// }
-
-/* change db to world db */
-// $mysqli->select_db("datsko_todaynews");
-
-/* return name of current default database */
-// if ($result = $mysqli->query("SELECT DATABASE()")) {
-//   $row = $result->fetch_row();
-//   printf("Default database is %s.\n", $row[0]);
-//   $result->close();
-// }
+require_once('./php/db.php');
 
 $act = isset($_POST['act']) ? $_POST['act'] : $_GET['act'];
 $act2 = isset($_POST['act2']) ? $_POST['act2'] : $_GET['act2'];
 $act3 = isset($_POST['act3']) ? $_POST['act3'] : $_GET['act3'];
 
-// echo json_encode([$_REQUEST, $act]);
-// echo json_encode($_POST);
-// echo $act;
 $data = json_decode(base64_decode($_REQUEST['data']));
 
 if ((
@@ -43,37 +24,6 @@ if ((
   )) {
   echo json_encode(array('error' => 'login'));
   exit();
-}
-
-// echo json_encode([$_REQUEST, $act]);
-// echo json_encode($_POST);
-// echo $act;
-// $data = json_decode(base64_decode($_REQUEST['data']));
-// echo $utf->toAscii($data->title);
-// exit();
-
-function q($query) {
-  $mysqli = new mysqli('datsko.mysql.ukraine.com.ua', 'datsko_todaynews', 'rvbef8vy', 'datsko_todaynews');
-
-  if ($mysqli->connect_errno) {
-    throw new Exception("Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error);
-  }
-
-  if (!$mysqli->set_charset("utf8")) {
-    throw new Exception("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-  } else {
-    // printf("Current character set: %s\n", $mysqli->character_set_name());
-  }
-  // echo $query;
-  $result = $mysqli->query($query);
-  if (!$result) {
-    echo $query;
-    throw new Exception("Database Error [{$mysqli->errno}] {$mysqli->error}, (query: $query)");
-  } else {
-    return $result;
-  }
-  $mysqli->close();
 }
 
 function GUI($length = 32) {

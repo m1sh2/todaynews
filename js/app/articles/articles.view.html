@@ -1,9 +1,9 @@
 
-<a class="article" ng-repeat="article in arts.articles" href="/{{article.category_url}}/{{article.url}}">
-	<div class="article-date"><span class="date">{{article.date}}</span> - <span class="time">{{article.time}}</span></div>
+<a class="article" ng-repeat="article in home.articles" href="/{{article.category_url}}/{{article.url}}">
+  	<div class="article-date"><span class="date">{{article.date}}</span> - <span class="time">{{article.time}}</span></div>
   	<div class="article-category">{{article.category_title}}</div>
-  	<h4 class="article-title">
+  	<div class="article-title">
     	{{article.title}}
-  	</h4>
-  	<div class="article-content" ng-bind-html="article.content"></div>
+    	<div class="article-content" ng-bind-html="article.content"></div>
+  	</div>
 </a>
