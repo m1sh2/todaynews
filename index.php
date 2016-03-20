@@ -90,9 +90,14 @@ session_start();
     </div>
   </header>
   <div class="content">
-    <div class="page {{ pageClass }}" ng-view></div>
-    <div class="banner-bottom" ng-if="main.banners.bottom" ng-bind-html="main.banners.bottom.image" ng-click="main.bannerClick('bottom')"></div>
+    <div class="content-main">
+      <div class="page {{ pageClass }}" ng-view></div>
+    </div>
+    <div class="content-right">
+      <div class="banner-right" ng-if="main.banners.right" ng-bind-html="main.banners.right.image" ng-click="main.bannerClick('right')"></div>
+    </div>
   </div>
+  <div class="banner-bottom" ng-if="main.banners.bottom" ng-bind-html="main.banners.bottom.image" ng-click="main.bannerClick('bottom')"></div>
   <footer>
     <div class="menu">
       <a href="/about">О сервисе</a>

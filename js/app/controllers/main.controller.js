@@ -27,7 +27,7 @@ function MainCtrl($scope, xhr, $route, $location, $routeParams, $rootScope) {
   };
   main.banners.right = {
     id: 123,
-    image: '<img src="images/banners/banner1.png">',
+    image: '<img src="http://www.stc-india.org/wp-content/uploads/PPBU_Q213_fm11_banner_plane_stc_150x600.gif">',
     link: 'http://datsko.it',
     cat: 'obrazovaniye'
   };

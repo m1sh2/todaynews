@@ -1,10 +1,29 @@
 
+<div class="home-most">
+	<div class="home-most-viewed">
+		<h2>Самое просматривамое за неделю</h2>	
+		<a class="article" ng-repeat="article in home.articles" href="/{{article.category_url}}/{{article.url}}">
+		  	<div class="article-date"><span class="date">{{article.date}}</span> - <span class="time">{{article.time}}</span></div>
+		  	<div class="article-category">{{article.category_title}}</div>
+		  	<div class="article-title">
+		    	{{article.title}}
+		    	<div class="article-content" ng-bind-html="article.content"></div>
+		  	</div>
+		</a>
+	</div>
 
-<a class="article" ng-repeat="article in home.articles" href="/{{article.category_url}}/{{article.url}}">
-  	<div class="article-date"><span class="date">{{article.date}}</span> - <span class="time">{{article.time}}</span></div>
-  	<div class="article-category">{{article.category_title}}</div>
-  	<div class="article-title">
-    	{{article.title}}
-    	<div class="article-content" ng-bind-html="article.content"></div>
-  	</div>
-</a>
+	<div class="home-most-new">
+		<h2>Новое</h2>	
+		<a class="article" ng-repeat="article in home.articles" href="/{{article.category_url}}/{{article.url}}">
+		  	<div class="article-date"><span class="date">{{article.date}}</span> - <span class="time">{{article.time}}</span></div>
+		  	<div class="article-category">{{article.category_title}}</div>
+		  	<div class="article-title">
+		    	{{article.title}}
+		    	<div class="article-content" ng-bind-html="article.content"></div>
+		  	</div>
+		</a>
+	</div>
+</div>
+
+
+
