@@ -23,7 +23,6 @@
           </div>
           <div class="dcol34">
             <select name="category" ng-model="admin.article_category">
-              <option value="0">- No category -</option>
               <option value="{{category.id}}" ng-repeat="category in admin.categories">{{category.title}}</option>
             </select>
           </div>
