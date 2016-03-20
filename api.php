@@ -169,7 +169,7 @@ switch($act) {
 
   case 'getArticlesAdmin':
     $result = q("SELECT a.*, c.title AS category_name, c.url AS category_url FROM articles AS a
-      INNER JOIN categories AS c ON c.id = a.category
+      INNER JOIN categories AS c ON c.id = a.category OR a.category = 0
       ORDER BY a.datecreated DESC");
     // $result = q("SELECT a.* FROM articles AS a WHERE a.category = 2 ORDER BY a.datecreated DESC");
     
