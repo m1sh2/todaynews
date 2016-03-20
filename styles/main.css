@@ -160,7 +160,8 @@ footer .menu a:hover {
   color: #666;
 }
 footer .logo {
-  
+  margin: 20px 0 0;
+  text-align: right;
 }
 footer .logo img {
   

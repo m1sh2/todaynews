@@ -100,7 +100,7 @@ session_start();
       <a href="/adv">Реклама</a>
       <a href="/contacts">Контакты</a>
       <div class="logo">
-        <img src="/images/infa-logo-grey-32.png"> IN FA
+        <img src="/images/infa-logofull-grey-40.png">
       </div>
     </div>
     <div class="copyright">
