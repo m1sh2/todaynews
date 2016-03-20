@@ -92,8 +92,24 @@ switch($act) {
     echo json_encode([$result, 123, $data, $mysqli->insert_id]);
     break;
 
-  case 'getCategoriesAdmin':
   case 'getCategories':
+    $result = q("SELECT * FROM categories WHERE state = 1 AND id <> 13 ORDER BY title ASC");
+    $rows = array();
+    while ($row = $result->fetch_assoc()) {
+      array_push($rows, array(
+          'id' => $row['id'],
+          'title' => $row['title'],
+          'state' => $row['state'],
+          'url' => $row['url'],
+          'subid' => $row['subid']
+        )
+      );
+    }
+    echo json_encode($rows);
+    break;
+
+
+  case 'getCategoriesAdmin':
     $result = q("SELECT * FROM categories WHERE state = 1 ORDER BY title ASC");
     $rows = array();
     while ($row = $result->fetch_assoc()) {
@@ -142,7 +158,7 @@ switch($act) {
 
   case 'getArticlesHome':
     $result = q("SELECT a.*, c.title AS category_title, c.url AS category_url FROM articles AS a
-      INNER JOIN categories AS c ON c.id = a.category
+      INNER JOIN categories AS c ON c.id = a.category AND c.id <> 13
       WHERE a.state = 1
       ORDER BY a.datecreated DESC
       LIMIT 10");
