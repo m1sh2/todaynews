@@ -22,7 +22,7 @@ app.service('xhr', ['$http', '$location', function($http, $location) {
     }
 
     function resultPrepare(res, result) {
-        console.info(res);
+        // console.info(res);
         if (res.data.hasOwnProperty('error') && res.data.error == 'login') {
             $location.path('/login');
         }

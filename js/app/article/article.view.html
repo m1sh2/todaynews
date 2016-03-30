@@ -1,3 +1,52 @@
-<h1>{{art.title}}</h1>
-<!-- <div ng-repeat="article in arts.articles"><a href="/{{arts.category}}/{{article.url}}">{{article.title}}</a></div> -->
-<div ng-bind-html="art.content"></div>
+
+<div class="article-full">
+	<div class="home-most">
+		<div class="home-most-viewed">
+			<div class="article-details">
+		  		<span class="article-created">
+		  			<span class="article-date">{{art.date}}</span>
+		  		</span>
+		  		<span class="article-views"><i class="icon-eye"></i>{{art.views}}</span>
+	  		</div>
+			<h1>{{art.title}}</h1>
+			<!-- <div ng-repeat="article in arts.articles"><a href="/{{arts.category}}/{{article.url}}">{{article.title}}</a></div> -->
+			<div ng-bind-html="art.contentBegin"></div>
+
+			<!-- <div class="banner-middle" ng-if="main.bannersMiddle.length > 0 && !main.admin" ng-repeat="bannerMiddle in main.bannersMiddle" ng-bind-html="bannerMiddle.image" ng-click="main.bannerClick(bannerMiddle.id, bannerMiddle.link)"></div> -->
+
+			<div ng-bind-html="art.contentEnd"></div>
+		</div>
+
+		<div class="home-most-new">
+			<h2 class="home-most-viewed-header">Популярное</h2>	
+			<div class="home-most-new-first">
+				<a class="article" ng-repeat="article in art.mostViewed" href="/{{article.category_url}}/{{article.url}}">
+				  	<div class="article-details">
+				  		<span class="article-created">
+				  			<span class="article-date">{{article.date}}</span>
+				  		</span>
+				  		<span class="article-views"><i class="icon-eye"></i>{{article.views}}</span>
+			  		</div>
+				  	<div class="article-title">
+				    	{{article.title}}
+				  	</div>
+				</a>
+			</div>
+
+			<h2 class="home-most-new-header">Новое</h2>	
+			<div class="home-most-new-first">
+				<a class="article" ng-repeat="article in art.mostNew" href="/{{article.category_url}}/{{article.url}}">
+				  	<div class="article-details">
+				  		<span class="article-created">
+				  			<span class="article-date">{{article.date}}</span>
+				  		</span>
+				  		<span class="article-views"><i class="icon-eye"></i>{{article.views}}</span>
+			  		</div>
+				  	<div class="article-title">
+				    	{{article.title}}
+				  	</div>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

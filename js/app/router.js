@@ -20,6 +20,11 @@ app.config(['$routeProvider', '$locationProvider', 'AnalyticsProvider',
         controller: 'AdminCtrl',
         controllerAs: 'admin'
       }).
+      when('/about', {
+        templateUrl: './js/app/article/article-single.view.html',
+        controller: 'ArticleSingleCtrl',
+        controllerAs: 'art'
+      }).
       when('/login', {
         templateUrl: './js/app/login/login.view.html',
         controller: 'LoginCtrl',

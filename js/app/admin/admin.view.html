@@ -2,9 +2,15 @@
 <div ng-show="admin.user && admin.user.length === 64">
   <h1>Admin {{user}}</h1>
 
-  <div class="admin_articles">
-    <h2>Articles <button type="button" class="btn" ng-click="admin.articleAdd = !admin.articleAdd">Add article</button></h2>
-    <div ng-show="admin.articleAdd" style="  padding: 20px;background: #eee;margin: 0 0 20px;">
+  <div class="admin-tabs">
+    <span ng-click="main.adminTab = 'articles'">Articles</span>
+    <span ng-click="main.adminTab = 'categories'">Categories</span>
+    <span ng-click="main.adminTab = 'banners'">Banners</span>
+  </div>
+
+  <div class="admin_articles" ng-if="main.adminTab == 'articles'">
+    <h2>Articles <button type="button" class="btn" ng-click="admin.addArticleOpen()">Add article</button></h2>
+    <div ng-show="admin.articleAdd" style="padding: 20px;background: #eee;margin: 0 0 20px;">
       <span class="close icon-cross" ng-click="admin.articleAdd = !admin.articleAdd"></span>
       <form name="addArticleForm" ng-submit="admin.addArticle(this)">
         <div class="drow">
@@ -133,7 +139,7 @@
         <th>NAME</th>
         <th>ACTIONS</th>
       </tr>
-      <tr ng-repeat="article in admin.articles track by $index">
+      <tr ng-repeat="article in admin.articles track by $index" ng-if="admin.articles.length > 0">
         <td width="20" align="center">
           <i
             class="icon-{{admin.articleStates[article.state].icon}}"
@@ -151,31 +157,167 @@
           <i class="icon-trash btn" ng-click="admin.delete('article', article.id)"></i>
         </td>
       </tr>
+      <tr ng-if="admin.articles.length == 0">
+        <td colspan="5" align="center">- No articles -</td>
+      </tr>
     </table>
   </div>
 
+  <div ng-if="main.adminTab == 'categories'">
+    <h2>Categories</h2>
 
-  <h2>Categories</h2>
+    <table width="100%">
+      <tr>
+        <th><i class="icon-checkmark" style="color: limegreen;"></i></th>
+        <th>NAME</th>
+        <th>ACTIONS</th>
+      </tr>
+      <tr ng-repeat="category in admin.categories track by $index">
+        <td width="20" align="center">
+          <i
+            class="icon-{{admin.articleStates[category.state].icon}}"
+            style="color: {{admin.articleStates[category.state].color}};"></i>
+        </td>
+        <td><a href="{{category.url}}" target="_blank">{{category.title}}</a></td>
+        <td width="94" align="right">
+          <i class="icon-pencil btn" ng-click="admin.edit('category', category.id)"></i>
+          <i class="icon-trash btn" ng-click="admin.delete('category', category.id)"></i>
+        </td>
+      </tr>
+    </table>
+  </div>
+  
 
-  <table width="100%">
-    <tr>
-      <th><i class="icon-checkmark" style="color: limegreen;"></i></th>
-      <th>NAME</th>
-      <th>ACTIONS</th>
-    </tr>
-    <tr ng-repeat="category in admin.categories track by $index">
-      <td width="20" align="center">
-        <i
-          class="icon-{{admin.articleStates[category.state].icon}}"
-          style="color: {{admin.articleStates[category.state].color}};"></i>
-      </td>
-      <td><a href="{{category.url}}" target="_blank">{{category.title}}</a></td>
-      <td width="94" align="right">
-        <i class="icon-pencil btn" ng-click="admin.edit('category', category.id)"></i>
-        <i class="icon-trash btn" ng-click="admin.delete('category', category.id)"></i>
-      </td>
-    </tr>
-  </table>
+  <div class="admin_banners" ng-if="main.adminTab == 'banners'">
+    <h2>Banners <button type="button" class="btn" ng-click="admin.addBannerOpen()">Add banner</button></h2>
+    <div ng-show="admin.bannerAdd" style="padding: 20px;background: #eee;margin: 0 0 20px;">
+      <span class="close icon-cross" ng-click="admin.bannerAdd = !admin.bannerAdd"></span>
+      <form name="addBannerForm" ng-submit="admin.addBanner(this)">
+        <div class="drow">
+          <div class="dcol14">
+            <h5><label>State</label></h5>
+          </div>
+          <div class="dcol34">
+            <select name="state" ng-model="admin.banner_state">
+              <option value="{{id}}" ng-repeat="(id, state) in admin.articleStates">{{state.title}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="drow">
+          <div class="dcol14">
+            <h5><label>Category</label></h5>
+          </div>
+          <div class="dcol34">
+            <select name="category" ng-model="admin.banner_category">
+              <option value="0">- Home page -</option>
+              <option value="{{category.id}}" ng-repeat="category in admin.categories">{{category.title}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="drow">
+          <div class="dcol14">
+            <h5><label>Position</label></h5>
+          </div>
+          <div class="dcol34">
+            <select name="position" ng-model="admin.banner_position">
+              <option value="top">Top</option>
+              <option value="right">Right</option>
+              <option value="middle">Middle</option>
+              <option value="bottom">Bottom</option>
+            </select>
+          </div>
+        </div>
+        <div class="drow">
+          <div class="dcol14">
+            <h5><label>Date start</label></h5>
+          </div>
+          <div class="dcol34">
+            <input type="date" name="date_start" placeholder="Date start" ng-model="admin.banner_date_start">
+          </div>
+        </div>
+        <div class="drow">
+          <div class="dcol14">
+            <h5><label>Date end</label></h5>
+          </div>
+          <div class="dcol34">
+            <input type="date" name="date_end" placeholder="Date end" ng-model="admin.banner_date_end">
+          </div>
+        </div>
+        <div class="drow">
+          <div class="dcol14">
+            <h5><label>Title</label></h5>
+          </div>
+          <div class="dcol34">
+            <input name="title" placeholder="Title" ng-model="admin.banner_title">
+          </div>
+        </div>
+        <div class="drow">
+          <div class="dcol14">
+            <h5><label>Link</label></h5>
+          </div>
+          <div class="dcol34">
+            <input name="link" placeholder="Link" ng-model="admin.banner_link">
+          </div>
+        </div>
+        <div class="drow">
+          <div class="dcol11">
+            <h5><label>Image</label></h5>
+            <textarea name="content" placeholder="Image" ng-model="admin.banner_image" id="banner_image"></textarea>
+          </div>
+        </div>
+        <div align="center">
+          <button class="btn">Save</button>
+        </div>
+        
+      </form>
+    </div>
+
+    <table width="100%">
+      <tr>
+        <th><i class="icon-checkmark" style="color: limegreen;"></i></th>
+        <th>ID</th>
+        <th>PERIOD</th>
+        <th>CATEGORY</th>
+        <th>POSITION</th>
+        <th>TITLE</th>
+        <th>IMAGE</th>
+        <th>VIEWS/CLICKS</th>
+        <th>CLIENT</th>
+        <th>ACTIONS</th>
+      </tr>
+      <tr ng-repeat="banner in admin.banners track by $index" ng-if="admin.banners.length > 0">
+        <td width="20" align="center">
+          <i
+            class="icon-{{admin.articleStates[banner.state].icon}}"
+            style="color: {{admin.articleStates[banner.state].color}};"></i>
+        </td>
+        <td>{{banner.id}}</td>
+        <td>
+          <small>{{banner.date_start}}<br>{{banner.date_end}}</small>
+        </td>
+        <td width="110" ng-if="banner.category == 0">
+          - Home page -
+        </td>
+        <td width="110" ng-if="banner.category > 0">
+          {{banner.category_title}}
+        </td>
+        <td>
+          {{banner.position}}
+        </td>
+        <td><a href="{{banner.link}}" target="_blank">{{banner.title}}</a></td>
+        <td ng-bind-html="banner.image" width="100" class="admin-banner-preview"></td>
+        <td>{{banner.views}}/{{banner.clicks}}</td>
+        <td>{{banner.client}}</td>
+        <td width="94" align="right">
+          <i class="icon-pencil btn" ng-click="admin.edit('banner', banner.id)"></i>
+          <i class="icon-trash btn" ng-click="admin.delete('banner', banner.id)"></i>
+        </td>
+      </tr>
+      <tr ng-if="admin.banners.length == 0">
+        <td colspan="13" align="center">- No banners -</td>
+      </tr>
+    </table>
+  </div>
 
 
 </div>

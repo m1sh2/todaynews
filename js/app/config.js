@@ -5,5 +5,10 @@ var app = angular.module('INFA', ['ngRoute', 'ngSanitize', 'angular-google-analy
   }
 ]);
 
-
+app.filter('plaintext', function() {
+    return function(text) {
+      return  text ? String(text).replace(/<[^>]+>/gm, '') : '';
+    };
+  }
+);
 

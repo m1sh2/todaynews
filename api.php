@@ -37,7 +37,6 @@ function GUI($length = 32) {
 }
 
 switch($act) {
-
   case 'runLogin':
     $session_id = GUI(40);
     $start = rand(1, 24);
@@ -108,7 +107,6 @@ switch($act) {
     echo json_encode($rows);
     break;
 
-
   case 'getCategoriesAdmin':
     $result = q("SELECT * FROM categories WHERE state = 1 ORDER BY title ASC");
     $rows = array();
@@ -119,6 +117,60 @@ switch($act) {
           'state' => $row['state'],
           'url' => $row['url'],
           'subid' => $row['subid']
+        )
+      );
+    }
+    echo json_encode($rows);
+    break;
+
+  case 'getBannersAdmin':
+    $result = q("SELECT b.*, c.title AS category_title
+      FROM banners AS b
+      LEFT JOIN categories AS c ON c.id = b.category
+      ORDER BY b.date_end DESC");
+    $rows = array();
+    while ($row = $result->fetch_assoc()) {
+      array_push($rows, array(
+          'id' => $row['id'],
+          'title' => $row['title'],
+          'state' => $row['state'],
+          'image' => $row['image'],
+          'clicks' => $row['clicks'],
+          'views' => $row['views'],
+          'link' => $row['link'],
+          'client' => $row['client'],
+          'date_start' => date('Y-m-d', $row['date_start']),
+          'date_end' => date('Y-m-d', $row['date_end']),
+          'category' => $row['category'],
+          'category_title' => $row['category_title'],
+          'position' => $row['position']
+        )
+      );
+    }
+    echo json_encode($rows);
+    break;
+
+  case 'getBanners':
+    $result = q("SELECT b.*, c.url AS category_url
+      FROM banners AS b
+      LEFT JOIN categories AS c ON c.id = b.category
+      ORDER BY b.date_end DESC");
+    $rows = array();
+    while ($row = $result->fetch_assoc()) {
+      array_push($rows, array(
+          'id' => $row['id'],
+          'title' => $row['title'],
+          'state' => $row['state'],
+          'image' => $row['image'],
+          'clicks' => $row['clicks'],
+          'views' => $row['views'],
+          'link' => $row['link'],
+          'client' => $row['client'],
+          'date_start' => date('Y-m-d', $row['date_start']),
+          'date_end' => date('Y-m-d', $row['date_end']),
+          'category' => $row['category'],
+          'category_url' => $row['category_url'],
+          'position' => $row['position']
         )
       );
     }
@@ -156,12 +208,12 @@ switch($act) {
     }
     break;
 
-  case 'getArticlesHome':
+  case 'getArticlesHomeMostViewed':
     $result = q("SELECT a.*, c.title AS category_title, c.url AS category_url FROM articles AS a
       INNER JOIN categories AS c ON c.id = a.category AND c.id <> 13
       WHERE a.state = 1
-      ORDER BY a.datecreated DESC
-      LIMIT 10");
+      ORDER BY a.views DESC
+      LIMIT 11");
     // $result = q("SELECT a.* FROM articles AS a WHERE a.category = 2 ORDER BY a.datecreated DESC");
     
     $rows = array();
@@ -176,15 +228,116 @@ switch($act) {
           'category_url' => $row['category_url'],
           'date' => date('d.m.Y', $row['datecreated']),
           'time' => date('H:i', $row['datecreated']),
-          'subid' => $row['subid']
+          'subid' => $row['subid'],
+          'views' => $row['views']
         )
       );
     }
     echo json_encode($rows);
     break;
 
+  case 'getArticlesHomeMostNew':
+    $result = q("SELECT a.*, c.title AS category_title, c.url AS category_url FROM articles AS a
+      INNER JOIN categories AS c ON c.id = a.category AND c.id <> 13
+      WHERE a.state = 1
+      ORDER BY a.datecreated DESC
+      LIMIT 5");
+    // $result = q("SELECT a.* FROM articles AS a WHERE a.category = 2 ORDER BY a.datecreated DESC");
+    
+    $rows = array();
+    while ($row = $result->fetch_assoc()) {
+      array_push($rows, array(
+          'id' => $row['id'],
+          'title' => $row['title'],
+          'content' => $row['content'],
+          'state' => $row['state'],
+          'url' => $row['url'],
+          'category_title' => $row['category_title'],
+          'category_url' => $row['category_url'],
+          'date' => date('d.m.Y', $row['datecreated']),
+          'time' => date('H:i', $row['datecreated']),
+          'subid' => $row['subid'],
+          'views' => $row['views']
+        )
+      );
+    }
+    echo json_encode($rows);
+    break;
+
+  case 'getArticlesMostViewed':
+    $result = q("SELECT c.* FROM categories AS c WHERE c.url = '" . $data->category_url . "'");
+    $category = $result->fetch_assoc();
+
+    if ($category['id'] > 0) {
+      $result = q("SELECT a.* FROM articles AS a
+        WHERE a.category = '" . $category['id'] . "' AND a.state = 1
+        ORDER BY a.views DESC
+        LIMIT " . ($data->limit ? $data->limit : 5));
+      // $result = q("SELECT a.* FROM articles AS a WHERE a.category = 2 ORDER BY a.datecreated DESC");
+      
+      $rows = array();
+      while ($row = $result->fetch_assoc()) {
+        array_push($rows, array(
+            'id' => $row['id'],
+            'title' => $row['title'],
+            'content' => $row['content'],
+            'state' => $row['state'],
+            'url' => $row['url'],
+            'category_title' => $category['title'],
+            'category_url' => $category['url'],
+            'date' => date('d.m.Y', $row['datecreated']),
+            'time' => date('H:i', $row['datecreated']),
+            'subid' => $row['subid'],
+            'views' => $row['views']
+          )
+        );
+      }
+      echo json_encode(['category' => $category, 'articles' => $rows]);
+    } else {
+      echo json_encode(['error' => 'Not_found']);
+    }
+    break;
+
+  case 'getArticlesMostNew':
+    $result = q("SELECT c.* FROM categories AS c WHERE c.url = '" . $data->category_url . "'");
+    $category = $result->fetch_assoc();
+
+    if ($category['id'] > 0) {
+      $result = q("SELECT a.* FROM articles AS a
+        WHERE a.category = '" . $category['id'] . "' AND a.state = 1
+        ORDER BY a.datecreated DESC
+        LIMIT " . ($data->limit ? $data->limit : 5));
+      // $result = q("SELECT a.* FROM articles AS a WHERE a.category = 2 ORDER BY a.datecreated DESC");
+      
+      $rows = array();
+      while ($row = $result->fetch_assoc()) {
+        array_push($rows, array(
+            'id' => $row['id'],
+            'title' => $row['title'],
+            'content' => $row['content'],
+            'state' => $row['state'],
+            'url' => $row['url'],
+            'category_title' => $category['title'],
+            'category_url' => $category['url'],
+            'date' => date('d.m.Y', $row['datecreated']),
+            'time' => date('H:i', $row['datecreated']),
+            'subid' => $row['subid'],
+            'views' => $row['views']
+          )
+        );
+      }
+      echo json_encode(['category' => $category, 'articles' => $rows]);
+    } else {
+      echo json_encode(['error' => 'Not_found']);
+    }
+    break;
+
   case 'getArticlesAdmin':
-    $result = q("SELECT a.*, c.title AS category_name, c.url AS category_url FROM articles AS a
+    $result = q("SELECT
+        a.*,
+        c.title AS category_name,
+        c.url AS category_url
+      FROM articles AS a
       INNER JOIN categories AS c ON c.id = a.category
       ORDER BY a.datecreated DESC");
     // $result = q("SELECT a.* FROM articles AS a WHERE a.category = 2 ORDER BY a.datecreated DESC");
@@ -215,7 +368,6 @@ switch($act) {
       INNER JOIN articles AS a ON a.category = c.id
       WHERE c.url = '" . $data->category . "' AND a.url = '" . $data->article . "'
       ORDER BY a.datecreated DESC");
-    // $result = q("SELECT a.* FROM articles AS a WHERE a.category = 2 ORDER BY a.datecreated DESC");
     
     $rows = array();
     while ($row = $result->fetch_assoc()) {
@@ -224,10 +376,34 @@ switch($act) {
           'title' => $row['title'],
           'state' => $row['state'],
           'url' => $row['url'],
-          'content' => $row['content']
+          'date' => date('d.m.Y', $row['datecreated']),
+          'content' => $row['content'],
+          'views' => $row['views'] + 1
         )
       );
     }
+    $result = q("UPDATE articles SET views = views + 1 WHERE id = " . $rows[0]['id']);
+    echo json_encode($rows[0]);
+    break;
+
+  case 'getArticleSingle':
+    $result = q("SELECT a.* FROM articles AS a
+      WHERE a.url = '" . $data->article . "' AND a.state = 1");
+    
+    $rows = array();
+    while ($row = $result->fetch_assoc()) {
+      array_push($rows, array(
+          'id' => $row['id'],
+          'title' => $row['title'],
+          'state' => $row['state'],
+          'url' => $row['url'],
+          'date' => date('d.m.Y', $row['datecreated']),
+          'content' => $row['content'],
+          'views' => $row['views'] + 1
+        )
+      );
+    }
+    $result = q("UPDATE articles SET views = views + 1 WHERE id = " . $rows[0]['id']);
     echo json_encode($rows[0]);
     break;
 
@@ -295,20 +471,99 @@ switch($act) {
     }
     break;
 
+  case 'addBanner':  
+    if (isset($_REQUEST['part'])) {
+      if (!isset($_SESSION['data'])) {
+        $_SESSION['data'] = '';
+      }
+      $_SESSION['data'] .= $_REQUEST['part'];
+    } else {
+      if (isset($_REQUEST['finish'])) {
+        $data = json_decode(base64_decode($_SESSION['data'] . $_REQUEST['finish']));
+        $finish = true;
+        $_SESSION['data'] = '';
+      } else {
+        $finish = false;
+        $data = json_decode(base64_decode($_REQUEST['data']));
+      }
+      
+      $url = strtolower(str_replace(' ', '-', preg_replace('!\s+!', ' ', preg_replace("/[^a-zA-Z0-9 ]+/", "", JTransliteration::transliterate(base64_decode($data->title))))));
+      // echo $url;
+      // exit();
+
+      if ($data->id > 0) {
+        $result = q("UPDATE banners SET
+          title = '" . base64_decode($data->title) . "',
+          image = '" . base64_decode($data->image) . "',
+          link = '" . base64_decode($data->link) . "',
+          date_modified = '" . strtotime(date('Y-m-d H:i:s')) . "',
+          date_start = '" . strtotime(date(base64_decode($data->date_start))) . "',
+          date_end = '" . strtotime(date(base64_decode($data->date_end))) . "',
+          state = '" . $data->state . "',
+          category = '" . $data->category . "',
+          position = '" . $data->position . "'
+          WHERE id = '" . $data->id . "'");
+      } else {
+        $result = q("INSERT INTO banners (
+          title,
+          image,
+          link,
+          date_created,
+          date_start,
+          date_end,
+          state,
+          category,
+          position
+          ) VALUES (
+          '" . base64_decode($data->title) . "',
+          '" . base64_decode($data->image) . "',
+          '" . base64_decode($data->link) . "',
+          '" . strtotime(date('Y-m-d H:i:s')) . "',
+          '" . strtotime(date(base64_decode($data->date_start))) . "',
+          '" . strtotime(date(base64_decode($data->date_end))) . "',
+          '" . $data->state . "',
+          '" . $data->category . "',
+          '" . $data->position . "'
+          )");
+      }
+      
+
+      
+      
+      // $rows = array();
+      // while ($row = $result->fetch_assoc()) {
+      //   array_push($rows, array(
+      //       'id' => $row['id'],
+      //       'title' => $row['title'],
+      //       'state' => $row['state'],
+      //       'url' => $row['url'],
+      //       'subid' => $row['subid']
+      //     )
+      //   );
+      // }
+      echo json_encode([$result, $finish, $data, $mysqli->insert_id, $url, $_SESSION['data'], $_REQUEST['finish']]);
+    }
+    break;
+
   case 'delete':
-    switch ($_REQUEST['type']) {
+    switch ($data->type) {
       case 'article':
-        $result = q("DELETE FROM articles WHERE id = '" . $_REQUEST['id'] . "'");
+        $result = q("DELETE FROM articles WHERE id = '" . $data->id . "'");
         echo json_encode($result);
         break;
 
       case 'category':
-        $result = q("DELETE FROM categories WHERE id = '" . $_REQUEST['id'] . "'");
+        $result = q("DELETE FROM categories WHERE id = '" . $data->id . "'");
         echo json_encode($result);
         break;
 
       case 'user':
-        $result = q("DELETE FROM users WHERE id = '" . $_REQUEST['id'] . "'");
+        $result = q("DELETE FROM users WHERE id = '" . $data->id . "'");
+        echo json_encode($result);
+        break;
+
+      case 'banner':
+        $result = q("DELETE FROM banners WHERE id = '" . $data->id . "'");
         echo json_encode($result);
         break;
     }
@@ -330,6 +585,30 @@ switch($act) {
               'url' => $row['url'],
               'category' => $row['category'],
               'content' => base64_encode($row['content'])
+            )
+          );
+        }
+        echo json_encode($rows[0]);
+        break;
+
+      case 'banner':
+        $result = q("SELECT b.* FROM banners AS b
+          WHERE b.id = '" . $data->id . "'");
+        // $result = q("SELECT a.* FROM articles AS a WHERE a.category = 2 ORDER BY a.datecreated DESC");
+        
+        $rows = array();
+        while ($row = $result->fetch_assoc()) {
+          array_push($rows, array(
+              'id' => $row['id'],
+              'title' => base64_encode($row['title']),
+              'image' => base64_encode($row['image']),
+              'link' => base64_encode($row['link']),
+              'date_modified' => base64_encode(date('Y-m-d H:i:s', $row['date_modified'])),
+              'date_start' => base64_encode(date('Y-m-d H:i:s', $row['date_start'])),
+              'date_end' => base64_encode(date('Y-m-d H:i:s', $row['date_end'])),
+              'state' => $row['state'],
+              'category' => $row['category'],
+              'position' => $row['position']
             )
           );
         }
@@ -368,7 +647,7 @@ switch($act) {
     echo json_encode($code . '/' . $refresh);
     break;
 
-  case 'addBannerShow':
+  case 'addBannerView':
     $result = q("INSERT INTO banners_show (
         banner_id,
         category,
@@ -379,7 +658,7 @@ switch($act) {
         ip3,
         date_created
       ) VALUES (
-        '" . $data->banner_id . "',
+        '" . $data->id . "',
         '" . $data->category . "',
         '" . php_uname('a') . "',
         '" . $_SERVER['HTTP_USER_AGENT'] . "',
@@ -388,6 +667,8 @@ switch($act) {
         '" . $_SERVER['HTTP_CLIENT_IP'] . "',
         '" . strtotime(date('Y-m-d H:i:s')) . "'
       )");
+
+    $result = q("UPDATE banners SET views = views + 1 WHERE id = " . $data->id);
     
     echo json_encode($result);
     break;
@@ -403,7 +684,7 @@ switch($act) {
         ip3,
         date_created
       ) VALUES (
-        '" . $data->banner_id . "',
+        '" . $data->id . "',
         '" . $data->category . "',
         '" . php_uname('a') . "',
         '" . $_SERVER['HTTP_USER_AGENT'] . "',
@@ -412,6 +693,8 @@ switch($act) {
         '" . $_SERVER['HTTP_CLIENT_IP'] . "',
         '" . strtotime(date('Y-m-d H:i:s')) . "'
       )");
+
+    $result = q("UPDATE banners SET clicks = clicks + 1 WHERE id = " . $data->id);
     
     echo json_encode($result);
     break;

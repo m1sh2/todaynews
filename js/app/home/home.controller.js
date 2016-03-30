@@ -1,14 +1,21 @@
 'use strict';
 
-app.controller('HomeCtrl', ['$scope', '$http', HomeCtrl]);
+app.controller('HomeCtrl', ['$scope', 'xhr', HomeCtrl]);
 
-function HomeCtrl($scope, $http) {
+function HomeCtrl($scope, xhr) {
   // console.info(123);
   var home = this;
+  home.mostViewed = [];
+  home.mostNew = [];
   function getArticles() {
-    $http.get('api.php?act=getArticlesHome').then(function(result) {
+    xhr.get('api.php?act=getArticlesHomeMostViewed', {}, function(result) {
       // console.info(result);
-      home.articles = result.data;
+      home.mostViewed = result.data;
+      // $scope.user = data;
+    });
+    xhr.get('api.php?act=getArticlesHomeMostNew', {}, function(result) {
+      // console.info(result);
+      home.mostNew = result.data;
       // $scope.user = data;
     });
   }

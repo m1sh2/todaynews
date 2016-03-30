@@ -6,7 +6,7 @@ session_start();
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <base href="/">
   <title>IN-FA</title>
-  <link href="images/favicon.png" rel="icon">
+  <link href="images/favicon.ico" rel="icon">
   <link rel="stylesheet" href="styles/style.css" type="text/css" />
   <link rel="stylesheet" href="styles/grid.css" type="text/css" />
   <link rel="stylesheet" href="styles/icons.css" type="text/css" />
@@ -31,6 +31,7 @@ session_start();
   <!-- <script src="js/libs/Rx.js"></script> -->
 
   <!-- Libs -->
+  <script src="./js/libs/jquery-2.1.1.min.js"></script>
   <script src="./js/libs/angular.min.js"></script>
   <script src="./js/libs/angular-route.min.js"></script>
   <script src="./js/libs/angular-sanitize.min.js"></script>
@@ -51,6 +52,7 @@ session_start();
   <script src="./js/app/home/home.controller.js"></script>
   <script src="./js/app/articles/articles.controller.js"></script>
   <script src="./js/app/article/article.controller.js"></script>
+  <script src="./js/app/article/article-single.controller.js"></script>
   <script src="./js/app/admin/admin.controller.js"></script>
   <script src="./js/app/login/login.controller.js"></script>
   <script src="./js/app/signup/signup.controller.js"></script>
@@ -82,22 +84,22 @@ session_start();
 </head>
 <body>
 <div class="container" ng-controller="MainCtrl as main">
-  <header>
-    <div class="banner-top" ng-if="main.banners.top" ng-bind-html="main.banners.top.image" ng-click="main.bannerClick('top')"></div>
+  <header ng-if="!main.admin">
+    <div class="banner-top" ng-if="main.bannersTop.length > 0" ng-repeat="bannerTop in main.bannersTop" ng-bind-html="bannerTop.image" ng-click="main.bannerClick(bannerTop.id, bannerTop.link)"></div>
     <div id="categories" ng-controller="CategoriesCtrl as cats">
       <a href="/" class="logo" ng-click="main.cat = ''">IN <span>FA</span></a>
       <a href="{{category.url}}" ng-class="{'active' : main.cat == category.url}" ng-repeat="category in cats.categories" ng-click="main.cat = category.url">{{category.title}}</a>
     </div>
   </header>
   <div class="content">
-    <div class="content-main">
+    <div class="content-main" ng-class="{'content-main-right': !main.admin && main.bannersRight.length > 0}">
       <div class="page {{ pageClass }}" ng-view></div>
     </div>
-    <div class="content-right">
-      <div class="banner-right" ng-if="main.banners.right" ng-bind-html="main.banners.right.image" ng-click="main.bannerClick('right')"></div>
+    <div class="content-right" ng-if="!main.admin && main.bannersRight.length > 0">
+      <div class="banner-right" ng-if="main.bannersRight.length > 0" ng-repeat="bannerRight in main.bannersRight" ng-bind-html="bannerRight.image" ng-click="main.bannerClick(bannerRight.id, bannerRight.link)"></div>
     </div>
   </div>
-  <div class="banner-bottom" ng-if="main.banners.bottom" ng-bind-html="main.banners.bottom.image" ng-click="main.bannerClick('bottom')"></div>
+  <div class="banner-bottom" ng-if="main.bannersBottom.length > 0 && !main.admin" ng-repeat="bannerBottom in main.bannersBottom" ng-bind-html="bannerBottom.image" ng-click="main.bannerClick(bannerBottom.id, bannerBottom.link)"></div>
   <footer>
     <div class="menu">
       <a href="/about">О сервисе</a>
