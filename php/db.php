@@ -8,10 +8,7 @@ function q($query) {
       'PASS' => ''
     ),
     'LIVE' => (object)array(
-      'HOST' => 'datsko.mysql.ukraine.com.ua',
-      'NAME' => 'datsko_todaynews',
-      'USER' => 'datsko_todaynews',
-      'PASS' => 'rvbef8vy'
+
     )
   );
 
